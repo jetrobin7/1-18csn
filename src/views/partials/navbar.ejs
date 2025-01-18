@@ -1,0 +1,41 @@
+<head>
+</head>
+<body>
+    <div class="topbar">
+        <div class="menu-icon">
+            <i class='bx bx-menu' id="menu-button"></i>
+        </div>
+        <i class='bx bx-chevron-right chevron-icon' id="chevron-icon"></i>
+    </div>
+
+    <div class="dropdown" id="dropdown">
+        <div class="dropdown-item">
+            <i class='bx bx-log-out-circle'></i>
+            <a href="/user/alogout">Logout</a>
+        </div>
+    </div>
+
+    <script>
+        const chevronIcon = document.getElementById('chevron-icon');
+        const dropdown = document.getElementById('dropdown');
+
+        // Toggle dropdown on chevron icon click
+        chevronIcon.addEventListener('click', (event) => {
+            chevronIcon.classList.toggle('rotate');
+            dropdown.classList.toggle('active');
+            event.stopPropagation(); // Prevent the event from bubbling up
+        });
+
+        // Hide dropdown if clicked outside
+        document.addEventListener('click', (event) => {
+            const isClickInsideDropdown = dropdown.contains(event.target);
+            const isClickOnChevron = chevronIcon.contains(event.target);
+
+            // If the click is outside the dropdown and not on the chevron, hide the dropdown
+            if (!isClickInsideDropdown && !isClickOnChevron) {
+                dropdown.classList.remove('active');
+                chevronIcon.classList.remove('rotate');
+            }
+        });
+    </script>
+</body>

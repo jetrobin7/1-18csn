@@ -1,0 +1,376 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Manage Users</title>
+        <link rel="stylesheet" href="/style.css">
+        <style>
+            /* Basic styles */
+            body {
+                font-family: 'Roboto', sans-serif;
+                background-color: #f4f8f9;
+                color: #333;
+                margin: 0;
+                padding: 0;
+            }
+        
+            /* Main Content */
+            .main-content {
+                margin-left: 300px;
+                padding: 40px;
+                background-color: #ffffff;
+                overflow-y: auto;
+                transition: margin-left 0.3s ease;
+                flex: 1;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+        
+            /* Heading */
+            h1 {
+                color: #006d5b;
+                text-align: center;
+                font-size: 32px;
+                margin-bottom: 30px;
+                font-weight: 700;
+            }
+        
+            /* Table Styling */
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            }
+        
+            th, td {
+                padding: 15px;
+                text-align: left;
+                border: 1px solid #00bfae;
+                font-size: 16px;
+            }
+        
+            th {
+                background-color: #00bfae;
+                color: white;
+                font-weight: 600;
+            }
+        
+            tr:nth-child(even) {
+                background-color: #f1fdfb;
+            }
+        
+            tr:hover {
+                background-color: rgba(0, 191, 174, 0.15);
+            }
+        
+            /* Button Styling */
+            button {
+                background-color: #00bfae;
+                color: white;
+                border: none;
+                padding: 12px 18px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+                font-weight: 600;
+                font-size: 16px;
+            }
+        
+            button:hover {
+                background-color: #009c8e;
+                transform: translateY(-2px);
+            }
+        
+            button:disabled {
+                background-color: #b2e2e2;
+                cursor: not-allowed;
+            }
+        
+            /* Link Styling */
+            a {
+                color: #00bfae;
+                text-decoration: none;
+                font-weight: bold;
+                font-size: 16px;
+                transition: text-decoration 0.3s ease;
+            }
+        
+            a:hover {
+                text-decoration: underline;
+            }
+        
+            /* Form Elements */
+            input[type="date"], input[type="number"], select {
+                width: 100%;
+                padding: 12px;
+                font-size: 16px;
+                border: 1px solid #00bfae;
+                border-radius: 8px;
+                background-color: #f4f8f9;
+                box-sizing: border-box;
+                margin-bottom: 20px;
+                transition: border-color 0.3s ease;
+            }
+        
+            input[type="date"]:focus, input[type="number"]:focus, select:focus {
+                border-color: #006d5b;
+                outline: none;
+                background-color: white;
+            }
+
+            /* Table Controls Styling */
+            .table-controls {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .search-container {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+
+            .search-input {
+                padding: 12px;
+                font-size: 16px;
+                border: 1px solid #00bfae;
+                border-radius: 8px;
+                background-color: #f4f8f9;
+                width: 250px;
+                transition: border-color 0.3s ease;
+            }
+
+            .search-input:focus {
+                border-color: #006d5b;
+                outline: none;
+                background-color: white;
+            }
+
+            .sort-container {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+
+            .sort-button {
+                background-color: #00bfae;
+                color: white;
+                border: none;
+                padding: 12px 18px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+                font-weight: 600;
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .sort-button.active {
+                background-color: #006d5b;
+            }
+
+            .sort-button:hover {
+                background-color: #009c8e;
+                transform: translateY(-2px);
+            }
+
+            .sort-icon {
+                display: inline-block;
+                transition: transform 0.3s ease;
+            }
+
+            .sort-icon.descending {
+                transform: rotate(180deg);
+            }
+        
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                .main-content {
+                    margin-left: 0;
+                    padding: 20px;
+                }
+        
+                .container {
+                    padding: 25px;
+                    width: 90%;
+                }
+
+                .table-controls {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+                
+                .sort-container, .search-container {
+                    width: 100%;
+                }
+            }
+        </style>
+        
+        <script>
+        function changeStatus(userId, currentStatus) {
+            const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+            const statusCell = document.getElementById(`status-${userId}`);
+            const statusButton = document.getElementById(`status-btn-${userId}`);
+
+            // Update UI before the server response (Optimistic UI)
+            statusCell.textContent = newStatus;
+            statusButton.textContent = newStatus === 'Active' ? 'Deactivate' : 'Activate';
+            statusButton.disabled = true;
+
+            // Send PATCH request to the server
+            fetch(`/user/${userId}/status`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: newStatus })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    alert('Failed to update status.');
+                    statusCell.textContent = currentStatus;
+                    statusButton.textContent = currentStatus === 'Active' ? 'Deactivate' : 'Activate';
+                } else {
+                    alert('Status updated successfully!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                statusCell.textContent = currentStatus;
+                statusButton.textContent = currentStatus === 'Active' ? 'Deactivate' : 'Activate';
+            })
+            .finally(() => {
+                statusButton.disabled = false;
+            });
+        }
+
+        function searchUsers() {
+            const searchInput = document.getElementById('userSearch').value.toLowerCase();
+            const tableRows = document.querySelectorAll('tbody tr');
+            
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchInput) ? '' : 'none';
+            });
+        }
+
+        let currentSortDirection = 'asc';
+        
+        function sortTable(column) {
+            const table = document.querySelector('table');
+            const rows = Array.from(table.querySelectorAll('tbody tr'));
+            const icon = document.querySelector('.sort-icon');
+            
+            currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+            icon.classList.toggle('descending');
+            
+            rows.sort((a, b) => {
+                let aValue = a.cells[column].textContent.trim();
+                let bValue = b.cells[column].textContent.trim();
+                
+                // Handle numeric values
+                if (!isNaN(aValue) && !isNaN(bValue)) {
+                    aValue = parseFloat(aValue);
+                    bValue = parseFloat(bValue);
+                }
+                
+                if (currentSortDirection === 'asc') {
+                    return aValue > bValue ? 1 : -1;
+                } else {
+                    return aValue < bValue ? 1 : -1;
+                }
+            });
+            
+            // Remove existing rows
+            rows.forEach(row => row.parentNode.removeChild(row));
+            
+            // Add sorted rows
+            const tbody = table.querySelector('tbody');
+            rows.forEach(row => tbody.appendChild(row));
+            
+            // Update button text
+            const button = document.querySelector('.sort-button');
+            button.setAttribute('aria-label', `Sort ${currentSortDirection === 'asc' ? 'descending' : 'ascending'}`);
+        }
+        </script>
+    </head>
+    <body>
+        <%- include('../partials/sidebar') %>
+        <%- include('../partials/navbar') %>
+        <div class="main-content">
+            <div class="container">
+                <h1>Manage Users</h1>
+
+                <div class="table-controls">
+                    <div class="sort-container">
+                        <button 
+                            class="sort-button" 
+                            onclick="sortTable(1)" 
+                            aria-label="Sort ascending"
+                        >
+                            Sort by Name 
+                            <span class="sort-icon">↑</span>
+                        </button>
+                    </div>
+                    <div class="search-container">
+                        <input
+                            type="text"
+                            id="userSearch"
+                            class="search-input"
+                            placeholder="Search users..."
+                            onkeyup="searchUsers()"
+                        />
+                        <button class="search-button" onclick="searchUsers()">
+                            Search
+                        </button>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Email Address</th>
+                            <th>Status</th>
+                            <th>Date Hired</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% teachers.forEach(teacher => { %>
+                            <tr>
+                                <td><%= teacher.userId %></td>
+                                <td><%= teacher.firstName %> <%= teacher.lastName %></td>
+                                <td><%= teacher.email %></td>
+                                <td id="status-<%= teacher._id %>"><%= teacher.status %></td>
+                                <td><%= new Date(teacher.dateHired).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></td>
+                                <td>
+                                    <a href="/admin/manage-users">View</a>
+                                    |
+                                    <button 
+                                        id="status-btn-<%= teacher._id %>" 
+                                        onclick="changeStatus('<%= teacher._id %>', '<%= teacher.status %>')" 
+                                        aria-label="Change status of <%= teacher.firstName %> <%= teacher.lastName %>">
+                                        <%= teacher.status === 'Active' ? 'Deactivate' : 'Activate' %>
+                                    </button>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+    </html>

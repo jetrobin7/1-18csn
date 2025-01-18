@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CSN Admin Login</title>
+    <link rel="stylesheet" type="text/css" href="/assets/login.css">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal button {
+            background-color: teal;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal button:hover {
+            background-color: #005f5f;
+        }
+
+        .timer {
+            font-size: 16px;
+            margin-top: 10px;
+            color: red;
+        }
+
+        .form-control {
+            position: relative;
+        }
+
+        #togglePassword {
+            border: none;
+            background: transparent;
+            position: absolute;
+            right: 14%;
+            top: 45%;
+            transform: translateY(-40%);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <section class="side">
+        <img id="loginBanner" src="/images/Csn2.gif" alt="Login Banner">
+    </section>
+
+    <section class="main">
+        <div class="login-container">
+            <img src="/images/csn logo.png" alt="CSN Logo">
+            <h4>Parañaque City Center for</h4>
+            <h1>Children with Special Needs</h1>
+            <div class="separator"></div>
+            <p class="welcome-message">Log in your credentials to proceed and access the Teacher Panel</p>
+
+            <div class="form-box">
+                <div class="card-body p-4">
+                    <form class="login-form" method="POST" action="/tlogin">
+                        <div class="form-control">
+                            <input type="text" placeholder="Email" name="uname" id="uname" class="form-control" required>
+                            <i class="ri-user-fill"></i>
+                        </div>
+                        <div class="form-control">
+                            <input type="password" placeholder="Password" name="password" id="password" class="form-control" required>
+                            <i class="bx bx-lock"></i>
+                            <button type="button" id="togglePassword">
+                                <i id="toggleIcon" class="bx bx-show"></i>
+                            </button>
+                        </div>
+                        <div class="forgot-password-container">
+                            <a href="/mail/forgetpassword" class="text-muted forgot-password">Forgot Password?</a>
+                        </div>
+                        <button class="submit" id="submitButton">Login</button>
+                    </form>
+                </div>
+            </div>
+            <div class="link-container">
+                <a href="/" class="text-muted back-to-home">Back to Home</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- OTP Modal -->
+    <div id="otpModal" class="modal">
+        <div class="modal-content">
+            <h3>Verify OTP</h3>
+            <p>An OTP has been sent to your email. Please enter it below:</p>
+            <form id="otpForm" method="POST" action="/teacher/verifyotp">
+                <input type="text" id="otp" name="otp" placeholder="Enter OTP" required>
+                <button type="submit">Verify</button>
+            </form>
+            <p id="timer" class="timer">Expires in 3:00</p>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content">
+            <h3>Change Your Password</h3>
+            <form id="changePasswordForm">
+                <input type="password" id="newPassword" name="newPassword" placeholder="New Password" required>
+                <button type="submit">Change Password</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.querySelector('.login-form');
+        const otpModal = document.getElementById('otpModal');
+        const otpForm = document.getElementById('otpForm');
+        const passwordField = document.getElementById('password');
+        const loginBanner = document.getElementById('loginBanner');
+        const timerElement = document.getElementById('timer');
+        const passwordToggle = document.getElementById('togglePassword');
+        const toggleIcon = document.getElementById('toggleIcon');
+        const changePasswordModal = document.getElementById('changePasswordModal');
+        const changePasswordForm = document.getElementById('changePasswordForm');
+        const newPasswordField = document.getElementById('newPassword');
+
+        let otpTimer;
+        let timerMinutes = 3;
+        let timerSeconds = 0;
+
+        // Banner Animation
+        passwordField.addEventListener('focus', () => {
+            loginBanner.src = '/images/closeeyes.gif';
+        });
+
+        passwordField.addEventListener('blur', () => {
+            loginBanner.src = '/images/Csn2.gif';
+        });
+
+        // Login Form Submission
+        loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const uname = document.getElementById('uname').value;
+        const password = passwordField.value;
+
+        try {
+            const response = await fetch('/tlogin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ uname, password }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+            if (result.requireOtp) {
+                // If OTP is required, show the OTP modal
+                showOtpModal();
+            } else if (!result.passwordChanged) {
+                // If password has not been changed, show the Change Password modal
+                showChangePasswordModal();
+            } else {
+                // If both OTP and password conditions are satisfied, redirect to dashboard
+                window.location.href = '/teacher/tdashboard';
+            }
+            } else {
+            alert(result.message || 'Login failed!');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('An error occurred during login. Please try again.');
+        }
+        });
+
+
+        // OTP Timer
+        function startOtpTimer() {
+            timerMinutes = 3;
+            timerSeconds = 0;
+
+            otpTimer = setInterval(() => {
+                if (timerSeconds === 0) {
+                    if (timerMinutes === 0) {
+                        clearInterval(otpTimer);
+                        alert('OTP expired!');
+                        otpModal.style.display = 'none';
+                    } else {
+                        timerMinutes--;
+                        timerSeconds = 59;
+                    }
+                } else {
+                    timerSeconds--;
+                }
+
+                timerElement.textContent = `Expires in ${String(timerMinutes).padStart(2, '0')}:${String(timerSeconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // Show OTP Modal
+        function showOtpModal() {
+            otpModal.style.display = 'block';
+            startOtpTimer();
+        }
+
+        // Show Change Password Modal
+        function showChangePasswordModal() {
+            changePasswordModal.style.display = 'block';
+        }
+
+        // OTP Verification
+        otpForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const otp = document.getElementById('otp').value;
+
+    try {
+        const response = await fetch('/teacher/verifyotp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ otp }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+        otpModal.style.display = 'none'; // Hide OTP modal
+        if (!result.passwordChanged) {
+            // If password has not been changed, show the Change Password modal
+            showChangePasswordModal();
+        } else {
+            // If password is already changed, redirect to dashboard
+            window.location.href = '/teacher/tdashboard';
+        }
+        } else {
+        alert(result.message || 'Invalid OTP!');
+        }
+    } catch (error) {
+        console.error(error);
+        alert('An error occurred during OTP verification.');
+    }
+    });
+
+
+// Password Change Form Submission
+changePasswordForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const newPassword = newPasswordField.value;
+
+    try {
+        const response = await fetch('/tchange-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ newPassword }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert(result.message || 'Password changed successfully!');
+            changePasswordModal.style.display = 'none';
+
+            // If password change is successful, redirect to login
+            if (!result.passwordChanged) {
+            //     // Password change still needed, show OTP modal
+            //     showOtpModal();
+            // } else {
+                // Password already changed, go to dashboard
+                window.location.href = '/teacher/tdashboard';
+            }
+        } else {
+            alert(result.message || 'Failed to change password.');
+        }
+    } catch (error) {
+        console.error(error);
+        alert('An error occurred while changing the password.');
+    }
+});
+
+
+
+        // Password Toggle
+        passwordToggle.addEventListener('click', () => {
+            const isPasswordVisible = passwordField.type === 'text';
+            passwordField.type = isPasswordVisible ? 'password' : 'text';
+            toggleIcon.classList.toggle('bx-show', isPasswordVisible);
+            toggleIcon.classList.toggle('bx-hide', !isPasswordVisible);
+        });
+    </script>
+</body>
+</html>

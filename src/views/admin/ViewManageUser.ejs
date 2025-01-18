@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users</title>
+    <link rel="stylesheet" href="/path/to/your/styles.css">
+</head>
+<body>
+    <h1>Manage Users</h1>
+    
+    <!-- Form for Adding a New Teacher -->
+    <form action="/admin/add-teacher" method="POST">
+        <label for="firstName">First Name</label>
+        <input type="text" name="firstName" required>
+        
+        <label for="lastName">Last Name</label>
+        <input type="text" name="lastName" required>
+        
+        <label for="email">Email</label>
+        <input type="email" name="email" required>
+        
+        <label for="number">Phone Number</label>
+        <input type="text" name="number" required>
+        
+        <label for="designation">Designation</label>
+        <input type="text" name="designation" required>
+        
+        <label for="therapyType">Therapy Type</label>
+        <input type="text" name="therapyType" required>
+        
+        <button type="submit">Add Teacher</button>
+    </form>
+
+    <h2>Existing Teachers</h2>
+    <!-- Table displaying teachers -->
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% teachers.forEach(teacher => { %>
+                <tr>
+                    <td><%= teacher.firstName %></td>
+                    <td><%= teacher.lastName %></td>
+                    <td><%= teacher.email %></td>
+                    <td><%= teacher.status %></td>
+                    <td>
+                        <a href="/admin/edit-teacher/<%= teacher._id %>">Edit</a>
+                        <a href="/admin/delete-teacher/<%= teacher._id %>">Delete</a>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <script src="/path/to/your/scripts.js"></script>
+</body>
+</html>

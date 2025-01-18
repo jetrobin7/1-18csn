@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Appointment</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", system-ui, -apple-system, sans-serif;
+        }
+
+        .main-content {
+            margin-left: 300px;
+            padding: 2rem;
+            background: #f0fdfa;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px -4px rgba(13, 148, 136, 0.1);
+            border: 1px solid rgba(13, 148, 136, 0.1);
+        }
+
+        .page-title {
+            color: #0d9488;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            text-align: left;
+            text-shadow: 0 1px 2px rgba(13, 148, 136, 0.1);
+            border-bottom: 3px solid #0d9488;
+            padding-bottom: 0.5rem;
+            width: fit-content;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .search-bar {
+            position: relative;
+            max-width: 300px;
+            width: 100%;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.925rem;
+            transition: all 0.2s ease;
+            background: #f8fafc;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #14b8a6;
+            box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #0d9488;
+            width: 18px;
+            height: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1rem;
+        }
+
+        th {
+            background: #f0fdfa;
+            color: #0f766e;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 1.25rem 1rem;
+            text-align: left;
+            border-bottom: 2px solid #0d9488;
+        }
+
+        td {
+            padding: 1.25rem 1rem;
+            font-size: 0.925rem;
+            color: #334155;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background-color: #f0fdfa;
+            transform: translateX(4px);
+        }
+
+        .action-btn {
+            padding: 0.625rem 1.25rem;
+            background: #0d9488;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: #14b8a6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(20, 184, 166, 0.2);
+        }
+
+        .action-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 200px;
+                padding: 1.5rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                margin-left: 150px;
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            th, td {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 1.75rem;
+            }
+
+            .search-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-bar {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('../partials/sidebar') %>
+    <%- include('../partials/navbar') %>
+    <div class="main-content">
+        <div class="container">
+            <h1 class="page-title">Student Appointment</h1>
+            <div class="search-container">
+                <div class="search-bar">
+                    <input type="text" id="search" placeholder="Search by name or CSN number...">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>CSN No.</th>
+                        <th>Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTable">
+                    <% students.forEach(student => { %>
+                        <tr>
+                            <td><%= student.csnNo %></td>
+                            <td><%= student.surname %> <%= student.givenName %> <%= student.middleName %></td>
+                            <td>
+                                <button class="action-btn" onclick="location.href='/admin/a_make_an_appointment/add?csnNo=<%= student.csnNo %>&surname=<%= student.surname %>&givenName=<%= student.givenName %>&middleName=<%= student.middleName %>&gender=<%= student.gender %>&emailAddress=<%= student.emailAddress %>'">
+                                    Make an Appointment
+                                </button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.getElementById('search').addEventListener('input', function() {
+            const searchValue = this.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#studentTable tr');
+            
+            tableRows.forEach(row => {
+                const csn = row.cells[0].textContent.toLowerCase();
+                const name = row.cells[1].textContent.toLowerCase();
+                const matchesSearch = name.includes(searchValue) || csn.includes(searchValue);
+                
+                if (!matchesSearch) {
+                    row.style.opacity = '0';
+                    setTimeout(() => {
+                        row.style.display = 'none';
+                    }, 200);
+                } else {
+                    row.style.display = '';
+                    setTimeout(() => {
+                        row.style.opacity = '1';
+                    }, 50);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

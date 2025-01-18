@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add an Appointment</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/inter-ui/3.19.3/inter.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #0D9488;
+            --primary-light: #14B8A6;
+            --primary-dark: #0F766E;
+            --gray-50: #F8FAFC;
+            --gray-100: #F1F5F9;
+            --gray-200: #E2E8F0;
+            --gray-300: #CBD5E1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1E293B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--gray-100);
+            color: var(--gray-800);
+        }
+
+        .main-content {
+            margin-left: 300px;
+            padding: 2rem;
+            background-color: var(--gray-100);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+        }
+
+        h1 {
+            color: var(--primary-dark);
+            font-size: 1.875rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        fieldset {
+            border: none;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: var(--gray-50);
+            border-radius: 8px;
+        }
+
+        legend {
+            font-weight: 600;
+            color: var(--primary-dark);
+            padding: 0 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--gray-700);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 6px;
+            background-color: white;
+            color: var(--gray-800);
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:read-only {
+            background-color: var(--gray-100);
+            cursor: not-allowed;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+        }
+
+        .time-inputs {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .time-inputs select {
+            flex: 1;
+        }
+
+        .time-separator {
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        .action-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('../partials/sidebar') %>
+    <%- include('../partials/navbar') %>
+    
+    <div class="main-content">
+        <div class="container">
+            <h1>Schedule Appointment</h1>
+            <form action="/admin/a_make_an_appointment/add" method="POST">
+                <fieldset>
+                    <legend>Personal Information</legend>
+                    <div class="form-group">
+                        <label for="csnNo">CSN Number</label>
+                        <input type="text" name="csnNo" id="csnNo" readonly required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" name="surname" id="surname" readonly required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" name="givenName" id="givenName" readonly required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="middleName">Middle Name</label>
+                        <input type="text" name="middleName" id="middleName" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <input type="text" name="gender" id="gender" readonly required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emailAddress">Email Address</label>
+                        <input type="text" name="emailAddress" id="emailAddress" readonly value="<%= student.emailAddress || '' %>" required>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Appointment Details</legend>
+                    <div class="form-group">
+                        <label for="appointmentDate">Date of Appointment</label>
+                        <input type="date" name="appointmentDate" id="appointmentDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appointmentTimeStart">Appointment Time</label>
+                        <div class="time-inputs">
+                            <select name="appointmentTimeStart" id="appointmentTimeStart" required></select>
+                            <span class="time-separator">to</span>
+                            <select name="appointmentTimeEnd" id="appointmentTimeEnd" required></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="therapyType">Therapy Session</label>
+                        <select name="therapyType" id="therapyType" required>
+                            <option value="">Select Therapy Session</option>
+                            <% therapies.forEach(function(therapy) { %>
+                                <option value="<%= therapy.name %>">
+                                    <%= therapy.name %> - <%= therapy.description %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select name="category" id="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Cycle 1">Cycle 1</option>
+                            <option value="Cycle 2">Cycle 2</option>
+                            <option value="Cycle 3">Cycle 3</option>
+                            <option value="Cycle 4">Cycle 4</option>
+                            <option value="Cycle 5">Cycle 5</option>
+                            <option value="Cycle 6">Cycle 6</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="teacher">Teacher</label>
+                        <select name="teacher" id="teacher" required>
+                            <option value="">Select a Teacher</option>
+                            <% teachers.forEach(function(teacher) { %>
+                                <option value="<%= teacher._id %>">
+                                    <%= teacher.firstName %> <%= teacher.lastName %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </fieldset>
+
+                <button type="submit" class="action-btn">Schedule Appointment</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function populateTimeSelects() {
+            const timeStartSelect = document.getElementById('appointmentTimeStart');
+            const timeEndSelect = document.getElementById('appointmentTimeEnd');
+
+            let startTime = new Date("1970-01-01T08:00:00");
+            const endTime = new Date("1970-01-01T17:00:00");
+
+            while (startTime <= endTime) {
+                const timeString = startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const option = document.createElement('option');
+                option.value = timeString;
+                option.text = timeString;
+                timeStartSelect.appendChild(option.cloneNode(true));
+                timeEndSelect.appendChild(option.cloneNode(true));
+
+                startTime.setMinutes(startTime.getMinutes() + 15);
+            }
+        }
+
+        function getUrlParams() {
+            const params = {};
+            const queryString = window.location.search.slice(1);
+            const pairs = queryString.split('&');
+            pairs.forEach(pair => {
+                const [key, value] = pair.split('=');
+                params[decodeURIComponent(key)] = decodeURIComponent(value);
+            });
+            return params;
+        }
+
+        window.onload = function() {
+            populateTimeSelects();
+            const params = getUrlParams();
+            if (params.csnNo) document.getElementById('csnNo').value = params.csnNo;
+            if (params.surname) document.getElementById('surname').value = params.surname;
+            if (params.givenName) document.getElementById('givenName').value = params.givenName;
+            if (params.middleName) document.getElementById('middleName').value = params.middleName;
+            if (params.gender) document.getElementById('gender').value = params.gender;
+            if (params.emailAddress) document.getElementById('emailAddress').value = params.emailAddress;
+        };
+    </script>
+</body>
+</html>

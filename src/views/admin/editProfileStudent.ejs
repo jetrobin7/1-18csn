@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Student Profile</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #E8F9F8; /* Light teal background */
+        }
+
+        h1 {
+            text-align: center;
+            color: #004D4D; /* Dark teal */
+        }
+
+        form {
+            background-color: #FFFFFF;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        section {
+            border: 1px solid #B2DFDB; /* Light teal border */
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        section h2 {
+            margin-top: 0;
+            color: #00796B; /* Medium teal */
+        }
+
+        label {
+            display: block;
+            margin: 8px 0 4px;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 4px 0;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        input[type="number"] {
+            width: 50%;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row div {
+            flex: 1;
+        }
+
+        button {
+            background-color: #00796B; /* Medium teal */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #004D4D; /* Dark teal */
+        }
+
+        input, select, textarea {
+            font-size: 14px;
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid #00796B; /* Medium teal outline */
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Student Profile</h1>
+    <form action="/admin/edit-student/<%= student._id %>" method="POST" enctype="multipart/form-data">
+        <section>
+            <h2>Personal Information</h2>
+            <div class="form-row">
+                <div>
+                    <label for="csnNo">CSN Number:</label>
+                    <input type="text" id="csnNo" name="csnNo" value="<%= student.csnNo %>" required>
+                </div>
+                <div>
+                    <label for="intakeDate">Intake Date:</label>
+                    <input type="date" id="intakeDate" name="intakeDate" value="<%= student.intakeDate.toISOString().split('T')[0] %>" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="surname">Surname:</label>
+                    <input type="text" id="surname" name="surname" value="<%= student.surname %>" required>
+                </div>
+                <div>
+                    <label for="givenName">Given Name:</label>
+                    <input type="text" id="givenName" name="givenName" value="<%= student.givenName %>" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="middleName">Middle Name:</label>
+                    <input type="text" id="middleName" name="middleName" value="<%= student.middleName || '' %>">
+                </div>
+                <div>
+                    <label for="suffix">Suffix:</label>
+                    <input type="text" id="suffix" name="suffix" value="<%= student.suffix || '' %>">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender" required>
+                        <option value="Male" <%= student.gender === 'Male' ? 'selected' : '' %>>Male</option>
+                        <option value="Female" <%= student.gender === 'Female' ? 'selected' : '' %>>Female</option>
+                        <option value="Other" <%= student.gender === 'Other' ? 'selected' : '' %>>Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="dateOfBirth">Date of Birth:</label>
+                    <input type="date" id="dateOfBirth" name="dateOfBirth" value="<%= student.dateOfBirth.toISOString().split('T')[0] %>" required>
+                </div>
+                <div>
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" value="<%= student.age %>" required>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Contact Information</h2>
+            <div class="form-row">
+                <div>
+                    <label for="district">District:</label>
+                    <input type="text" id="district" name="district" value="<%= student.district %>">
+                </div>
+                <div>
+                    <label for="barangay">Barangay:</label>
+                    <input type="text" id="barangay" name="barangay" value="<%= student.barangay %>">
+                </div>
+            </div>
+
+            <label for="completeAddress">Complete Address:</label>
+            <input type="text" id="completeAddress" name="completeAddress" value="<%= student.completeAddress %>" required>
+
+            <label for="contactNumber">Contact Number:</label>
+            <input type="text" id="contactNumber" name="contactNumber" value="<%= student.contactNumber %>">
+
+            <label for="emailAddress">Email Address:</label>
+            <input type="email" id="emailAddress" name="emailAddress" value="<%= student.emailAddress %>">
+        </section>
+
+        <section>
+            <h2>Family Information</h2>
+            <div class="form-row">
+                <div>
+                    <label for="parentTatay">Father's Name:</label>
+                    <input type="text" id="parentTatay" name="parentTatay" value="<%= student.parentTatay %>">
+                </div>
+                <div>
+                    <label for="parentNanay">Mother's Name:</label>
+                    <input type="text" id="parentNanay" name="parentNanay" value="<%= student.parentNanay %>">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="trabahoTatay">Father's Job:</label>
+                    <input type="text" id="trabahoTatay" name="trabahoTatay" value="<%= student.trabahoTatay || '' %>">
+                </div>
+                <div>
+                    <label for="trabahoNanay">Mother's Job:</label>
+                    <input type="text" id="trabahoNanay" name="trabahoNanay" value="<%= student.trabahoNanay || '' %>">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="workingStatus">Working Status:</label>
+                    <input type="text" id="workingStatus" name="workingStatus" value="<%= student.workingStatus %>">
+                </div>
+                <div>
+                    <label for="incomeBracket">Income Bracket:</label>
+                    <input type="text" id="incomeBracket" name="incomeBracket" value="<%= student.incomeBracket %>">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="familyMembers">Number of Family Members:</label>
+                    <input type="number" id="familyMembers" name="familyMembers" value="<%= student.familyMembers %>">
+                </div>
+                <div>
+                    <label for="benefits">Benefits (comma-separated):</label>
+                    <input type="text" id="benefits" name="benefits" value="<%= student.benefits.join(', ') %>">
+                </div>
+            </div>
+        </section>
+
+        <button type="submit">Save Changes</button>
+    </form>
+</body>
+</html>

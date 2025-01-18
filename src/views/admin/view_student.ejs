@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Information</title>
+    <style>
+        /* General styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+
+        /* Section styling */
+        section {
+            border: 2px solid #4CAF50; /* Green border for each section */
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #e8f5e9; /* Light green background */
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #2e7d32; /* Dark green for section titles */
+        }
+
+        /* Styling for the individual information */
+        p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        strong {
+            display: inline-block;
+            width: 200px;
+            color: #1b5e20; /* Deep green for labels */
+        }
+
+        a {
+            text-decoration: none;
+            color: #4CAF50; /* Green for links */
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Back link styling */
+        a[href="/admin/masterlist"] {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50; /* Green button */
+            color: white;
+            border-radius: 4px;
+            text-align: center;
+        }
+        a[href="/admin/masterlist"]:hover {
+            background-color: #388E3C; /* Darker green on hover */
+        }
+    </style>
+</head>
+<body>
+    <h1>Student Information</h1>
+    
+    <section>
+        <h2>Personal Information</h2>
+        <p><strong>CSN Number:</strong> <%= student.csnNo %></p>
+        <p><strong>Intake Date:</strong> <%= student.intakeDate ? student.intakeDate.toDateString() : 'N/A' %></p>
+        <p><strong>Full Name:</strong> <%= student.surname %> <%= student.givenName %> <%= student.middleName || '' %> <%= student.suffix || '' %></p>
+        <p><strong>Gender:</strong> <%= student.gender %></p>
+        <p><strong>Date of Birth:</strong> <%= student.dateOfBirth ? student.dateOfBirth.toDateString() : 'N/A' %></p>
+        <p><strong>Age:</strong> <%= student.age || 'N/A' %></p>
+    </section>
+
+    <section>
+        <h2>Contact Information</h2>
+        <p><strong>District:</strong> <%= student.district %></p>
+        <p><strong>Barangay:</strong> <%= student.barangay %></p>
+        <p><strong>Complete Address:</strong> <%= student.completeAddress %></p>
+        <p><strong>Contact Number:</strong> <%= student.contactNumber %></p>
+        <p><strong>Email Address:</strong> <%= student.emailAddress %></p>
+    </section>
+
+    <section>
+        <h2>Family Information</h2>
+        <p><strong>Father's Name:</strong> <%= student.parentTatay %></p>
+        <p><strong>Mother's Name:</strong> <%= student.parentNanay %></p>
+        <p><strong>Father's Job:</strong> <%= student.trabahoTatay || 'N/A' %></p>
+        <p><strong>Mother's Job:</strong> <%= student.trabahoNanay || 'N/A' %></p>
+        <p><strong>Working Status:</strong> <%= student.workingStatus %></p>
+        <p><strong>Income Bracket:</strong> <%= student.incomeBracket %></p>
+        <p><strong>Number of Family Members:</strong> <%= student.familyMembers %></p>
+        <p><strong>Benefits:</strong> <%= student.benefits.join(', ') %></p>
+    </section>
+
+    <section>
+        <h2>School and Therapy Information</h2>
+        <p><strong>School Name:</strong> <%= student.schoolName || 'N/A' %></p>
+        <p><strong>Grade Level:</strong> <%= student.gradeLevel %></p>
+        <p><strong>School Schedule:</strong> <%= student.schoolSchedule || 'N/A' %></p>
+        <p><strong>School Days:</strong> <%= student.schoolDays ? student.schoolDays.join(', ') : 'N/A' %></p>
+        <p><strong>Therapy Schedule:</strong> <%= student.therapySchedule || 'N/A' %></p>
+        <p><strong>Diagnosis:</strong> <%= student.diagnosis ? student.diagnosis.join(', ') : 'N/A' %></p>
+        <p><strong>Other Conditions:</strong> <%= student.otherConditions || 'N/A' %></p>
+    </section>
+
+    <section>
+        <h2>Assessment and Documentation</h2>
+        <p><strong>Assessment Date:</strong> <%= student.assessmentDate ? student.assessmentDate.toDateString() : 'N/A' %></p>
+        <p><strong>Reassessment Date:</strong> <%= student.ReassessmentDate ? student.ReassessmentDate.toDateString() : 'N/A' %></p>
+        <p><strong>Testing Center:</strong> <%= student.testingCenter %></p>
+        <p><strong>PWD ID No.:</strong> <%= student.pwdIdNo || 'N/A' %></p>
+        <p><strong>Date Issued:</strong> <%= student.dateIssued ? student.dateIssued.toDateString() : 'N/A' %></p>
+        <p><strong>Validity:</strong> <%= student.validity || 'N/A' %></p>
+    </section>
+
+    <a href="/admin/masterlist">Back to Students List</a>
+</body>
+</html>

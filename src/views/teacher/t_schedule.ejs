@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Schedule</title>
+    <style>
+        /* CSS styling for the schedule view */
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        .calendar-container {
+            margin-left: 300px;
+            padding: 20px;
+            background-color: #ffffff;
+            overflow-y: auto;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+        .nav-buttons { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+        }
+        .nav-buttons button { 
+            padding: 10px; 
+            background-color: #4CAF50; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 16px; 
+        }
+        .week-display { 
+            font-size: 18px; 
+            font-weight: bold; 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 8px; 
+            text-align: center; 
+        }
+        th { 
+            background-color: #4CAF50; 
+            color: white; 
+        }
+        .time-slot { 
+            font-weight: bold; 
+        }
+        .no-appointments { 
+            color: red; 
+            font-size: 18px; 
+            margin: 20px 0; 
+        }
+    </style>
+</head>
+<body>
+    <%- include('../partials/tsidebar') %>
+    <%- include('../partials/navbar') %>
+
+    <div class="calendar-container">
+        <h1>Teacher Schedule</h1>
+    
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <button onclick="navigateWeek(-1)">&lt; Previous Week</button>
+            <div class="week-display">Week of <%= dateRangeDisplay %></div>
+            <button onclick="navigateWeek(1)">Next Week &gt;</button>
+        </div>
+    
+        <!-- Table -->
+        <% if (appointments.length === 0) { %>
+            <div class="no-appointments">No appointment schedule</div>
+        <% } else { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="day-header">Time Slot</th>
+                        <th class="day-header">Monday <br><strong>(<%= weekDates.MondayDateOnly %>)</strong></th>
+                        <th class="day-header">Tuesday <br><strong>(<%= weekDates.TuesdayDateOnly %>)</strong></th>
+                        <th class="day-header">Wednesday <br><strong>(<%= weekDates.WednesdayDateOnly %>)</strong></th>
+                        <th class="day-header">Thursday <br><strong>(<%= weekDates.ThursdayDateOnly %>)</strong></th>
+                        <th class="day-header">Friday <br><strong>(<%= weekDates.FridayDateOnly %>)</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% uniqueTimeSlots.forEach(function(timeSlot) { %>
+                        <tr>
+                            <td class="time-slot"><%= timeSlot %></td>
+                            <% ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach(function(day) { %>
+                                <td>
+                                    <% (groupedAppointments[day][timeSlot] || []).forEach(student => { %>
+                                        <div><%= student.givenName %> <%= student.surname %></div>
+                                    <% }); %>
+                                </td>
+                            <% }); %>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        <% } %>
+    </div>
+
+    <!-- Include moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    
+    <script>
+        function navigateWeek(offset) {
+            // Get the current URL
+            const currentUrl = new URL(window.location.href);
+
+            // Get the current selectedDate or use today's date
+            const selectedDate = currentUrl.searchParams.get('selectedDate') || moment().format('YYYY-MM-DD');
+
+            // Adjust the selected date by the offset in weeks
+            const newDate = moment(selectedDate, 'YYYY-MM-DD').add(offset, 'weeks').format('YYYY-MM-DD');
+
+            // Update the query parameter with the new date
+            currentUrl.searchParams.set('selectedDate', newDate);
+
+            // Reload the page with the updated URL
+            window.location.href = currentUrl.toString();
+        }
+    </script>
+</body>
+</html>

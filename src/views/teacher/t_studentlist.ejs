@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .action a {
+            margin-right: 10px;
+            color: blue;
+            text-decoration: none;
+        }
+        .navigation {
+            margin-bottom: 20px;
+        }
+        .navigation a {
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 5px 10px;
+            border: 1px solid black;
+            background-color: #f9f9f9;
+            color: black;
+            border-radius: 5px;
+        }
+        .navigation a:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <% 
+        const currentDate = new Date(req.query.date || new Date().toISOString().split('T')[0]);
+        const prevDate = new Date(currentDate);
+        prevDate.setDate(currentDate.getDate() - 1);
+        const nextDate = new Date(currentDate);
+        nextDate.setDate(currentDate.getDate() + 1);
+    %>
+
+    <div class="navigation">
+        <a href="/teacher/student-list?date=<%= prevDate.toISOString().split('T')[0] %>">Previous Day</a>
+        <a href="/teacher/student-list?date=<%= nextDate.toISOString().split('T')[0] %>">Next Day</a>
+    </div>
+
+    <h1>Student List as of <%= currentDate.toLocaleDateString() %></h1>
+    <table>
+        <thead>
+            <tr>
+                <th>CSN No</th>
+                <th>Name</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (appointments.length > 0) { %>
+                <% appointments.forEach(appointment => { %>
+                    <tr>
+                        <td><%= appointment.csnNo %></td>
+                        <td><%= appointment.surname %>, <%= appointment.givenName %></td>
+                        <td><%= appointment.appointmentTimeStart %> - <%= appointment.appointmentTimeEnd %></td>
+                        <td><%= appointment.attendance %></td>
+                        <td class="action">
+                            <a href="/teacher/attendance/<%= appointment._id %>?status=Present">Present</a>
+                            <a href="/teacher/attendance/<%= appointment._id %>?status=Absent">Absent</a>
+                        </td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="5">No appointments found for this date.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Appointments</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #eafaf1;
+            font-family: Arial, sans-serif;
+        }
+        .main-content {
+            margin-left: 300px;
+            padding: 20px;
+            background-color: #ffffff;
+            overflow-y: auto;
+            flex: 1;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+        h2 {
+            text-align: center;
+            color: #008080; /* Teal color */
+            margin-bottom: 30px;
+        }
+        .search-bar {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        .search-bar input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #008080; /* Teal border */
+            border-radius: 4px;
+        }
+        .table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .table th {
+            background-color: #008080; /* Teal background */
+            color: white;
+            padding: 12px;
+            text-align: center;
+        }
+        .table td {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        .table tbody tr:hover {
+            background-color: rgba(0, 128, 128, 0.2); /* Light teal hover */
+        }
+        .btn-warning {
+            background-color: #008080; /* Teal background */
+            border-color: #008080; /* Teal border */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-warning:hover {
+            background-color: #006666; /* Darker teal for hover */
+            border-color: #006666;
+        }
+        .text-center {
+            color: #888;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+    </style>    
+
+</head>
+
+<body>
+    <%- include('../partials/sidebar') %>
+    <%- include('../partials/navbar') %>
+
+    <div class="main-content">
+        <div class="container">
+            <h2>Manage Appointments</h2>
+            
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="search" placeholder="Search by student name or CSN No..." onkeyup="filterTable()">
+            </div>
+            
+            <!-- Appointments Table -->
+            <table class="table table-bordered" id="appointmentsTable">
+                <thead>
+                    <tr>
+                        <th>CSN No.</th>
+                        <th>Name</th>
+                        <th>Date of Appointment</th>
+                        <th>Time of Appointment</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (appointments && appointments.length) { %>
+                        <% appointments.forEach(appointment => { %>
+                            <tr>
+                                <td><%= appointment.csnNo %></td>
+                                <td><%= `${appointment.surname} ${appointment.givenName}` %></td>
+                                <td><%= new Date(appointment.appointmentDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></td>
+                                <td><%= appointment.appointmentTimeStart %></td>
+                                <td>
+                                    <button 
+                                    onclick="openRescheduleModal('<%= appointment._id %>', '<%= appointment.csnNo %>', '<%= appointment.surname %>', '<%= appointment.givenName %>', '<%= appointment.middleName %>', '<%= appointment.appointmentDate.toISOString() %>', '<%= appointment.appointmentTimeStart %>', '<%= appointment.appointmentTimeEnd %>', '<%= appointment.therapyType %>', '<%= appointment.category %>', '<%= appointment.teacher %>')"
+                                    class="btn btn-warning">
+                                    Reschedule
+                                </button>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="5" class="text-center">No appointments found.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Reschedule Modal -->
+    <div class="modal fade" id="rescheduleModal" tabindex="-1" role="dialog" aria-labelledby="rescheduleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="rescheduleForm" method="POST" action="/admin/manage_appointment/reschedule">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="rescheduleModalLabel">Reschedule Appointment</h5>
+                       
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="appointmentId" id="modalAppointmentId">
+                        <div class="form-group">
+                            <label><strong>CSN No.</strong></label>
+                            <p id="modalCsnNo" class="form-control-plaintext"></p>
+                        </div>
+                        <div class="form-group">
+                            <label><strong>Student Name</strong></label>
+                            <p id="modalStudentName" class="form-control-plaintext"></p>
+                        </div>
+                        <div class="form-group">
+                            <label><strong>Previous Appointment Date</strong></label>
+                            <p id="modalPreviousDateAppointment" class="form-control-plaintext"></p>
+                        </div>
+                        <div class="form-group">
+                            <label><strong>Previous Appointment Time</strong></label>
+                            <p id="modalPreviousTime" class="form-control-plaintext"></p>
+                        </div>
+                        <div class="form-group">
+                            <label><strong>Therapy Type</strong></label>
+                            <p id="modalTherapySession" class="form-control-plaintext"></p>
+                        </div>
+                        <div class="form-group">
+                            <label><strong>Category</strong></label>
+                            <p id="modalCategory" class="form-control-plaintext"></p>
+                        </div>
+                        <div class="form-group">
+                            <label><strong>Teacher</strong></label>
+                            <p id="modalTeacher" class="form-control-plaintext"></p>
+                        </div>
+                        <div class="form-group">
+                            <label><strong>New Appointment Date</strong></label>
+                            <input type="date" id="modalNewDate" class="form-control" name="newDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label><strong>Reason for Rescheduling</strong></label>
+                            <textarea id="modalReason" class="form-control" name="reason" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cancelReschedule()">Cancel</button> <!-- Cancel button with function -->
+                        <button type="submit" class="btn btn-primary">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+        
+    <script>
+        // Function to open Reschedule Modal
+        function openRescheduleModal(id, csnNo, surname, givenName, middleName, appointmentDate, appointmentTimeStart, appointmentTimeEnd, therapyType, category, teacher) {
+            document.getElementById('modalAppointmentId').value = id;
+            document.getElementById('modalCsnNo').textContent = csnNo;
+            document.getElementById('modalStudentName').textContent = `${surname} ${givenName}`;
+            document.getElementById('modalPreviousDateAppointment').textContent = appointmentDate.split('T')[0];
+            document.getElementById('modalPreviousTime').textContent = `${appointmentTimeStart} - ${appointmentTimeEnd}`;
+            document.getElementById('modalTherapySession').textContent = therapyType;
+            document.getElementById('modalCategory').textContent = category;
+            document.getElementById('modalTeacher').textContent = teacher;
+            document.getElementById('modalNewDate').value = appointmentDate.split('T')[0]; // Pre-fill current date
+            $('#rescheduleModal').modal('show');
+        }
+
+        // Function to handle Cancel button click
+        function cancelReschedule() {
+            // Close the modal without making any changes
+            $('#rescheduleModal').modal('hide');
+
+            // Optionally, reset the form to ensure no data is retained after cancellation
+            document
+            .getElementById('rescheduleForm').reset();
+        }
+
+        // Function to filter the appointments table
+        function filterTable() {
+            // Get the value of the search input
+            const searchValue = document.getElementById('search').value.toLowerCase();
+
+            // Get all table rows in the tbody
+            const rows = document.querySelectorAll('#appointmentsTable tbody tr');
+
+            rows.forEach(row => {
+                // Get the CSN number and Name from the row
+                const csnNo = row.cells[0].textContent.toLowerCase(); // CSN No. column
+                const name = row.cells[1].textContent.toLowerCase();  // Name column
+
+                // Check if the search value matches the CSN number or Name
+                if (csnNo.includes(searchValue) || name.includes(searchValue)) {
+                    row.style.display = ''; // Show the row if it matches
+                } else {
+                    row.style.display = 'none'; // Hide the row if it doesn't match
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+

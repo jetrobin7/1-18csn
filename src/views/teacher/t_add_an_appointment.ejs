@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add an Appointment</title>
+    <style>
+        /* General reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Montserrat", system-ui;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 300px;
+            padding: 20px;
+            background-color: #ffffff;
+            overflow-y: auto;
+            flex: 1;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            margin-left: 300px;
+            background-color: #ffffff;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #003366;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Time Input Styling */
+        .time-inputs {
+            display: flex;
+            align-items: center;
+        }
+
+        .time-inputs select {
+            width: auto;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            margin: 0 10px;
+        }
+
+        .time-inputs .time-separator {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            background-color: #228B22;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .action-btn:hover {
+            background-color: #90EE90;
+        }
+    </style>
+</head>
+<body>
+    <%- include('../partials/tsidebar') %>
+    <%- include('../partials/navbar') %>
+    
+    <div class="main-content">
+        <div class="container">
+            <h1>Add Appointment</h1>
+            <form action="/teacher/t_make_an_appointment/add" method="POST">
+                <fieldset>
+                    <legend>PERSONAL INFORMATION</legend>
+                    <label for="csnNo">CSN NO.:</label>
+                    <input type="text" name="csnNo" id="csnNo" readonly required>
+            
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" name="surname" id="surname" readonly required><br>
+            
+                    <label for="firstName">First Name:</label>
+                    <input type="text" name="givenName" id="givenName" readonly required><br>
+            
+                    <label for="middleName">Middle Name:</label>
+                    <input type="text" name="middleName" id="middleName" readonly><br>
+            
+                    <label for="gender">Gender:</label>
+                    <input type="text" name="gender" id="gender" readonly required>
+
+                    <label for="emailAddress">Email:</label>
+                    <input type="text" name="emailAddress" id="emailAddress" readonly value="<%= student.emailAddress || '' %>" required>
+                </fieldset>
+            
+                <fieldset>
+                    <legend>APPOINTMENT DETAILS</legend>
+                    <label for="appointmentDate">Date of Appointment:</label>
+                    <input type="date" name="appointmentDate" id="appointmentDate" required>
+            
+                    <!-- Updated Time Inputs with "to" separator -->
+                    <label for="appointmentTimeStart">Time of Appointment:</label>
+                    <div class="time-inputs">
+                        <select name="appointmentTimeStart" id="appointmentTimeStart" required></select> <!-- This sends the start time -->
+                        <span class="time-separator">to</span>
+                        <select name="appointmentTimeEnd" id="appointmentTimeEnd" required></select> <!-- This sends the end time -->
+                    </div>
+                    
+            
+                    <label for="therapyType">Therapy Session:</label>
+                    <select name="therapyType" id="therapyType" required>
+                        <option value="">Select Therapy Session</option>
+                        <% therapies.forEach(function(therapy) { %>
+                            <option value="<%= therapy.name %>">
+                                <%= therapy.name %> - <%= therapy.description %>
+                            </option>
+                        <% }); %>
+                    </select>
+
+                    <label for="category">Category:</label>
+                    <select name="category" id="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Cycle 1">Cycle 1</option>
+                        <option value="Cycle 2">Cycle 2</option>
+                        <option value="Cycle 3">Cycle 3</option>
+                        <option value="Cycle 4">Cycle 4</option>
+                        <option value="Cycle 5">Cycle 5</option>
+                        <option value="Cycle 6">Cycle 6</option>
+                    </select>
+            
+                    <label for="teacher">Teacher:</label>
+                    <select name="teacher" id="teacher" required>
+                        <option value="">Select a Teacher</option>
+                        <% teachers.forEach(function(teacher) { %>
+                            <option value="<%= teacher._id %>">
+                                <%= teacher.firstName %> <%= teacher.lastName %>
+                            </option>
+                        <% }); %>
+                    </select>
+                </fieldset>
+            
+                <button type="submit" class="action-btn">Add Appointment</button>
+            </form>
+        </div> <!-- End of container -->
+    </div> <!-- End of main-content -->
+
+    <script>
+        function populateTimeSelects() {
+            const timeStartSelect = document.getElementById('appointmentTimeStart');
+            const timeEndSelect = document.getElementById('appointmentTimeEnd');
+
+            let startTime = new Date("1970-01-01T08:00:00");
+            const endTime = new Date("1970-01-01T17:00:00");
+
+            while (startTime <= endTime) {
+                const timeString = startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const option = document.createElement('option');
+                option.value = timeString;
+                option.text = timeString;
+                timeStartSelect.appendChild(option.cloneNode(true));
+                timeEndSelect.appendChild(option.cloneNode(true));
+
+                startTime.setMinutes(startTime.getMinutes() + 15);
+            }
+        }
+
+        function getUrlParams() {
+            const params = {};
+            const queryString = window.location.search.slice(1);
+            const pairs = queryString.split('&');
+            pairs.forEach(pair => {
+                const [key, value] = pair.split('=');
+                params[decodeURIComponent(key)] = decodeURIComponent(value);
+            });
+            return params;
+        }
+
+        window.onload = function() {
+            populateTimeSelects();
+            const params = getUrlParams();
+            if (params.csnNo) document.getElementById('csnNo').value = params.csnNo;
+            if (params.surname) document.getElementById('surname').value = params.surname;
+            if (params.givenName) document.getElementById('givenName').value = params.givenName;
+            if (params.middleName) document.getElementById('middleName').value = params.middleName;
+            if (params.gender) document.getElementById('gender').value = params.gender;
+            if (params.emailAddress) document.getElementById('emailAddress').value = params.emailAddress;
+        };
+    </script>
+    </script>
+</body>
+</html>

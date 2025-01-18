@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Main container styling */
+        .main-content {
+            margin-left: 300px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 20px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Header */
+        h2, h3 {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Left and Right Side */
+        .left-side, .right-side {
+            flex: 1;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .left-side h3, .right-side h3 {
+            color: #3f51b5;
+        }
+
+        .left-side p, .right-side p {
+            margin: 10px 0;
+            font-size: 1em;
+            color: #555;
+        }
+
+        .left-side p strong, .right-side p strong {
+            color: #333;
+        }
+
+        .left-side a {
+            display: inline-block;
+            margin-top: 15px;
+            color: #ffffff;
+            background-color: #3f51b5;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .left-side a:hover {
+            background-color: #5c6bc0;
+        }
+
+        /* Profile Picture */
+        .avatar-lg {
+            display: block;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            object-fit: cover;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Media Query for Responsive Layout */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <%- include('partials/sidebar') %>
+    <%- include('partials/topbar') %>
+    <div class="main-content">
+        <div class="container">
+            <div class="right-side">
+                <h3>Basic Information</h3>
+                <% if (profile.profilePicture) { %>
+                    <img src="/uploads/<%= profile.profilePicture %>" class="avatar-lg" alt="Profile image">
+                <% } else { %>
+                    <img src="/assets/csn logo og.png" class="avatar-lg" alt="Default Profile Image">
+                <% } %>
+                <p><strong>Name:</strong> <%= teacher.firstName %> <%= teacher.middleInitial %> <%= teacher.lastName %> <%= teacher.suffix %></p>
+                <p><strong>Employee Id:</strong> <%= teacher.userId %></p>
+                <p><strong>Date Hired:</strong> <%= teacher.dateHired %></p>
+                <p><strong>Email:</strong> <%= teacher.email %></p>
+                <p><strong>Phone Number:</strong> <%= teacher.number %></p>
+                <p><strong>Address:</strong> <%= profile.address %></p>
+            </div>
+            <div class="left-side">
+                <h3>Job Information</h3>
+                <p><strong>Position Title:</strong> <%= profile.positionTitle %></p>
+                <p><strong>Plantilla Item No.:</strong> <%= profile.planTilla %></p>
+                <p><strong>Salary Grade (SG):</strong> <%= profile.salaryGrade %></p>
+                <p><strong>Monthly Salary:</strong> <%= profile.monthlySalary %></p>
+                <p><strong>GSIS No:</strong> <%= profile.gsisNo %></p>
+                <p><strong>PhilHealth No:</strong> <%= profile.philhealthNo %></p>
+                <p><strong>Pag-IBIG No:</strong> <%= profile.pagIbigNo %></p>
+                <p><strong>SSS No:</strong> <%= profile.sssNo %></p>
+                <p><strong>TIN No:</strong> <%= profile.tinNo %></p>
+                <p><strong>Precinct No:</strong> <%= profile.precinctNo %></p>
+                <p><strong>Barangay:</strong> <%= profile.brgy %></p>
+                <a href="/my_profile/edit">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

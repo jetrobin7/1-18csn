@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>CSN Appointment and Monitoring</title>
+        
+        <!---custom link-->
+        <link rel="stylesheet"  href="/assets/index.css">
+        <!--boxicons link-->
+        <link rel="stylesheet"
+        href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+        <!--remixicon link-->
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet"/>
+        <!--google font links-->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    </head>
+
+<body>
+    <header>
+        <ul class="navlist">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Parent Login</a></li>
+            <li><a href="/tlogin">Teacher Login</a></li>
+            <li><a href="/adminlogin">Admin Login</a></li>
+        </ul>
+        <div class="bx bx-menu" id="menu-icon"></div>
+    </header>
+
+    
+    
+    <section class="csn">
+
+
+        <div class="csn-logo">
+            <img src="/images/csn logo.png">
+        </div>
+
+        <div class="csn-text">
+            <h4>Parañaque City Center for Children with Special Needs</h4>
+            <h1>Empowering every neurodivergent child to thrive.</h1>
+            <p>Providing FREE specialized care and support. Our dedicated team is committed to fostering growth, inclusion, & success for every child we serve.</p>
+        </div>
+    </section>
+
+    <script>
+        let menu = document.querySelector('#menu-icon');
+        let navlist = document.querySelector('.navlist');
+
+        menu.onclick = () => {
+            menu.classList.toggle('bx-x');
+            navlist.classList.toggle('open');
+        };
+    </script>
+    
+
+</body>
+</html>

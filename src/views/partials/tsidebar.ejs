@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSN Dashboard</title>
+    <!-- Boxicons -->
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    <!-- Remixicon -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Local CSS -->
+    <link rel="stylesheet" href="http://localhost:3000/assets/partials.css">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="bg-white" id="sidebar-wrapper">
+        <div class="logo-container text-center py-4">
+            <img src="/images/csn logo.png" alt="CSN Logo" class="csn-logo img-fluid" style="max-width: 80px;">
+            <div class="text-container">
+                <h3>Parañaque Center for</h3>
+                <h2>Children with Special Needs</h2>
+            </div>
+        </div>
+
+        <div class="list-group list-group-flush my-3">
+
+            <!-- Dashboard -->
+            <a href="/teacher/tdashboard" class="list-group-item list-group-item-action bg-transparent second-text ">
+                <i class="ri-dashboard-fill"></i> <strong>Dashboard</strong>
+            </a>
+            
+            
+            <!-- Student Appointment with Dropdown -->
+            <a href="#appointmentMenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action bg-transparent second-text ">
+                <i class='bx bxs-calendar'></i> <strong>Student Appointment</strong>
+                <i class='bx bx-chevron-right'></i>
+            </a>
+            <div class="collapse" id="appointmentMenu">
+                <a href="/teacher/t_make_an_appointment" class="list-group-item list-group-item-action bg-transparent second-text ps-5">
+                    Add New Appointment
+                </a>
+                <a href="/t_manage_appointment" class="list-group-item list-group-item-action bg-transparent second-text ps-5">
+                    Manage Appointment
+                </a>
+            </div>
+
+            <!-- Student Management with Dropdown -->
+            <a href="#managementMenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action bg-transparent second-text ">
+                <i class="ri-user-settings-fill"></i> <strong>Student Management</strong>
+                <i class='bx bx-chevron-right'></i>
+            </a>
+            <div class="collapse" id="managementMenu">
+                <a href="/t_add_new_student" class="list-group-item list-group-item-action bg-transparent second-text ps-5">
+                    Add New Student
+                </a>
+            </div>
+
+            <!-- Profile with Dropdown -->
+            <a href="#profileMenu" data-bs-toggle="collapse" class="list-group-item list-group-item-action bg-transparent second-text ">
+                <i class='bx bxs-user-rectangle'></i> <strong>Profile</strong>
+                <i class='bx bx-chevron-right'></i>
+            </a>
+            <div class="collapse" id="profileMenu">
+                <a href="my_profile" class="list-group-item list-group-item-action bg-transparent second-text ps-5">
+                    My Profile
+                </a>
+                <a href="/teacher/tlogout" class="list-group-item list-group-item-action bg-transparent second-text ps-5">
+                    Logout
+                </a>                
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // JavaScript to manage chevron rotation and closing other dropdowns
+        document.querySelectorAll('.list-group-item[data-bs-toggle="collapse"]').forEach(function (item) {
+            item.addEventListener('click', function () {
+                const currentDropdown = this.getAttribute('href'); // Get current dropdown target
+
+                // Loop through all collapses and close the ones that are not the current one
+                document.querySelectorAll('.collapse').forEach(function (collapse) {
+                    if ('#' + collapse.id !== currentDropdown) {
+                        let bsCollapse = new bootstrap.Collapse(collapse, {
+                            toggle: false
+                        });
+                        bsCollapse.hide();
+                    }
+                });
+
+                // Toggle rotation of chevron for the clicked item
+                const chevron = this.querySelector('.bx-chevron-right');
+                if (chevron) {
+                    chevron.classList.toggle('rotate'); // Toggle rotate class for current item
+                }
+
+                // Reset chevron rotation for other items
+                document.querySelectorAll('.list-group-item .bx-chevron-right').forEach(function (otherChevron) {
+                    if (otherChevron !== chevron) {
+                        otherChevron.classList.remove('rotate'); // Remove rotate class from other chevrons
+                    }
+                });
+            });
+        });
+    </script>
+
+    <style>
+        /* Chevron rotation */
+        .rotate {
+            transform: rotate(90deg); /* Rotate chevron 90 degrees */
+            transition: transform 0.3s ease;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .csn-logo {
+            max-width: 100px;
+            margin-bottom: 10px;
+        }
+
+        .text-container h2, .text-container h3 {
+            margin: 0;
+            font-weight: normal;
+        }
+    </style>
+
+</body>
+</html>

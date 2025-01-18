@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Teacher</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f8fa;
+            margin: 0;
+            padding: 0;
+            color: #000; /* Black text color */
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h3 {
+            color: #1abc9c; /* Teal color for header */
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        /* Form Styles */
+        .form-label {
+            font-weight: 600;
+            color: #000; /* Black color for label text */
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #000; /* Black text color inside the input fields */
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #1abc9c; /* Teal border on focus */
+            box-shadow: 0 0 8px rgba(26, 188, 156, 0.2);
+        }
+
+        .form-control::placeholder {
+            color: #1abc9c; /* Teal placeholder text */
+        }
+
+        select.form-control {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: #fff;
+            background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 6"%3E%3Cpath fill="none" stroke="%23444444" stroke-width="1" d="M1 1l3 3 3-3"%3E%3C/path%3E%3C/svg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            color: #000; /* Black color for the dropdown text */
+        }
+
+        select.form-control:focus {
+            border-color: #1abc9c; /* Teal border on focus */
+        }
+
+        /* Add Teacher Button Styling (Teal Background with Black Text) */
+        button {
+            background-color: #1abc9c; /* Teal color for button */
+            color: #000; /* Black text color */
+            font-weight: 600;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            width: 100%;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #16a085; /* Darker teal on hover */
+        }
+
+        /* Sidebar and Navbar Styling */
+        /* Assuming existing styles for sidebar and navbar are already modernized */
+    </style>
+</head>
+<body>
+    <%- include('../partials/sidebar') %>
+    <%- include('../partials/navbar') %>
+
+    <div class="main-content">
+        <div class="container">
+            <h3 class="my-4">Add New Teacher</h3>
+            <form action="/addteacher" method="POST" id="addTeacherForm">
+                <label for="dateHired" class="form-label">Date Hired:</label>
+                <input type="date" id="dateHired" name="dateHired" class="form-control" value="<%= new Date().toISOString().split('T')[0] %>" required>
+            
+                <input type="hidden" id="userId" name="userId" value="<%= userId %>" readonly class="form-control">
+            
+                <label for="lastName" class="form-label">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" class="form-control" required>
+            
+                <label for="firstName" class="form-label">First Name:</label>
+                <input type="text" id="firstName" name="firstName" class="form-control" required>
+            
+                <label for="middleInitial" class="form-label">Middle Name:</label>
+                <input type="text" id="middleInitial" name="middleInitial" class="form-control">
+            
+                <label for="suffix" class="form-label">Suffix:</label>
+                <input type="text" id="suffix" name="suffix" class="form-control">
+            
+                <label for="number" class="form-label">Cellphone Number:</label>
+                <input type="text" id="number" name="number" class="form-control" required>
+            
+                <label for="email" class="form-label">Email Address:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+
+                <!-- New Designation Field -->
+                <label for="designation" class="form-label">Designation:</label>
+                <select id="designation" name="designation" class="form-control" required>
+                    <option value="admin/teacher">Admin/Teacher</option>
+                    <option value="teacher">Teacher</option>
+                </select>
+             
+                <!-- New Therapy Type Assignment Field -->
+                <label for="therapyType" class="form-label">Type of Therapy Assign:</label>
+                <select id="therapyType" name="therapyType" class="form-control" required>
+                    <% therapies.forEach(therapy => { %>
+                        <option value="<%= therapy.name %>">
+                            <%= therapy.name %> - <%= therapy.description %>
+                        </option>
+                    <% }) %>
+                </select>
+            
+                <label for="password" class="form-label">Default Password:</label>
+                <input type="text" id="password" name="password" class="form-control" value="csn.Pque001" readonly>
+            
+                <button type="submit" class="btn btn-primary">Add Teacher</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('addTeacherForm').addEventListener('submit', function (event) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword');
+            if (confirmPassword && confirmPassword.value !== password) {
+                event.preventDefault();
+                alert('Passwords do not match.');
+            }
+        });
+    </script>
+</body>
+</html>

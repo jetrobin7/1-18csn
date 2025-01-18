@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masterlist</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/inter-ui/3.19.3/inter.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #0D9488;
+            --primary-light: #14B8A6;
+            --primary-dark: #0F766E;
+            --gray-50: #F8FAFC;
+            --gray-100: #F1F5F9;
+            --gray-200: #E2E8F0;
+            --gray-300: #CBD5E1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1E293B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--gray-100);
+            color: var(--gray-800);
+        }
+
+        .main-content {
+            margin-left: 300px;
+            padding: 2rem;
+            background-color: var(--gray-100);
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: var(--gray-800);
+            font-size: 1.875rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        /* Search Container Styles */
+        .search-container {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            padding-right: 1rem;
+        }
+
+        .search-input {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 6px;
+            width: 250px;
+            font-size: 0.875rem;
+            color: var(--gray-800);
+        }
+
+        .search-input:focus {
+            outline: 2px solid var(--primary-light);
+            border-color: transparent;
+        }
+
+        .search-button {
+            padding: 0.75rem 1rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100px;
+        }
+
+        .search-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .table-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        tr:hover {
+            background-color: var(--gray-50);
+        }
+
+        td {
+            color: var(--gray-700);
+            font-size: 0.875rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .view-link {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .view-link:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .edit-link {
+            background-color: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .edit-link:hover {
+            background-color: var(--gray-200);
+        }
+
+        .delete-link {
+            background-color: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .delete-link:hover {
+            background-color: #FEE2E2;
+            color: #B91C1C;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .search-container {
+                padding-right: 0;
+                max-width: 100%;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .search-button {
+                width: auto;
+            }
+
+            .action-link {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../partials/sidebar') %>
+    <%- include('../partials/navbar') %>
+    
+    <div class="main-content">
+        <h1>Masterlist of Students</h1>
+        
+        <!-- Search Container -->
+        <div class="search-container">
+            <input 
+                type="text" 
+                class="search-input" 
+                placeholder="Search by name, CSN no., or email..."
+                id="searchInput"
+            >
+            <button class="search-button" onclick="searchStudents()">Search</button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>CSN No.</th>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>Age</th>
+                        <th>Contact Number</th>
+                        <th>Email Address</th>
+                        <th>Tatay</th>
+                        <th>Nanay</th>
+                        <th>Barangay</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTableBody">
+                    <% students.forEach(student => { %>
+                        <tr>
+                            <td><%= student.csnNo %></td>
+                            <td><%= student.surname %> <%= student.givenName %></td>
+                            <td><%= student.gender %></td>
+                            <td><%= student.age %></td>
+                            <td><%= student.contactNumber %></td>
+                            <td><%= student.emailAddress %></td>
+                            <td><%= student.parentTatay %></td>
+                            <td><%= student.parentNanay %></td>
+                            <td><%= student.barangay %></td>
+                            <td class="actions">
+                                <a href="/admin/student_view/<%= student._id %>" class="action-link view-link">View</a>
+                                <a href="/admin/edit-student/<%= student._id %>" class="action-link edit-link">Edit</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Function to search students
+        function searchStudents() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const tableBody = document.getElementById('studentTableBody');
+            const rows = tableBody.getElementsByTagName('tr');
+
+            // Show all rows if search input is empty
+            if (searchInput === '') {
+                for (let row of rows) {
+                    row.style.display = '';
+                }
+                return;
+            }
+
+            for (let row of rows) {
+                const cells = row.getElementsByTagName('td');
+                let found = false;
+                
+                for (let cell of cells) {
+                    if (cell.textContent.toLowerCase().includes(searchInput)) {
+                        found = true;
+                        break;
+                    }
+                }
+                
+                row.style.display = found ? '' : 'none';
+            }
+        }
+
+        // Update search on input change (for backspace)
+        document.getElementById('searchInput').addEventListener('input', searchStudents);
+
+        // Add event listener for Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchStudents();
+            }
+        });
+    </script>
+</body>
+</html>

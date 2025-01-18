@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Student</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACRhKpAciEQ39bTzntCJy08_f1Hp8br5g&libraries=places"></script>
+
+</head>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+}
+
+body {
+    background-color: #f5f6fa;
+}
+
+.main-content {
+    margin-left: 300px;
+    padding: 5px;
+    background-color: #ffffff;
+    overflow-y: auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+form {
+    max-width: auto;
+    margin: 0 auto;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+form h5 {
+    color: #3eb489;
+    margin: 15px 0 5px;
+}
+
+.separator {
+    width: 100%;
+    height: 2px;
+    background-color: #65c3a1;
+    margin-bottom: 5px;
+}
+
+label {
+    display: block;
+    margin-top: 20px;
+    font-weight: 300;
+    color: #0f0f0f;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="tel"],
+input[type="number"],
+select,
+textarea {
+    width: 20%;
+    padding: 5px;
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #0f0f0f;
+    font-size: 14px;
+}
+
+input[type="file"] {
+    margin-top: 5px;
+}
+
+input[id="suffix"] {
+    width: 5%;
+    padding: 5px;
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #4a90e2;
+}
+
+select {
+    appearance: none;
+    background: url('data:image/svg+xml;base64,...') no-repeat right;
+    background-size: 10px;
+}
+
+input[type="checkbox"] {
+    margin: 10px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.checkbox-group label {
+    font-weight: normal;
+}
+
+.school-days, .benefits, .diagnosis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+button[type="submit"] {
+    width: 50%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #0396a6;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #0b698b;
+}
+</style>
+<body>
+    <%- include('../partials/tsidebar') %>
+    <%- include('../partials/navbar') %>
+<div class="dashboard">
+
+    <div class="main-content">
+    <h1>Add New Student</h1>
+    <form action="/teacher/add_new_student" method="POST" enctype="multipart/form-data">
+
+        <div class="date">
+            <label for="intakeDate"><strong>In-take Date:</strong></label>
+            <input type="date" id="intakeDate" name="intakeDate" required>
+        </div>
+
+        <!-- Student Details -->
+        <div class="child-information">
+            <h5>Child Information</h5>
+            <div class="separator"></div>
+            <label for="surname"><b>Last Name:</b></label>
+            <input type="text" id="surname" name="surname" required>
+
+            <label for="givenName"><b>First Name:</b></label>
+            <input type="text" id="givenName" name="givenName" required>
+ 
+            <label for="middleName"><b>Middle Name:</b></label>
+            <input type="text" id="middleName" name="middleName">
+
+            <label for="suffix"><b>Suffix:</b></label>
+            <input type="text" id="suffix" name="suffix"><br>
+
+            <label for="gender"><b>Gender:</b></label>
+            <select id="gender" name="gender" required>
+                <option value="" selected disabled>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+
+            <label for="dateOfBirth"><b>Date of Birth:</b></label>
+            <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+    
+            <label for="age"><b>Age:</b></label>
+            <input type="number" id="age" name="age" readonly><br>
+
+            <label for="district"><b>Choose a District:</b></label>
+            <select id="district" name="district" onchange="populateBarangays()" required>
+                <option value="" selected disabled>Select District</option>
+                <option value="district_1">District 1</option>
+                <option value="district_2">District 2</option>
+            </select><br>
+
+        <!-- Dropdown for selecting barangay -->
+            <label for="barangay"><b>Choose a Barangay:</b></label>
+            <select id="barangay" name="barangay" required>
+                <option value="" selected disabled>Select Barangay</option>
+            </select>
+
+            <label for="completeAddress"><b>Complete Address:</b></label>
+            <input type="text" id="completeAddress" name="completeAddress" required><br>
+       
+            <label for="contactNumber"><b>Contact Number:</b></label>
+            <input type="tel" id="contactNumber" name="contactNumber" required>
+
+            <label for="emailAddress"><b>Email Address:</b></label>
+            <input type="email" id="emailAddress" name="emailAddress" required>
+        </div>
+        <div>
+            <h5>Family Information</h5>
+            <div class="separator"></div>
+            <label for="parentTatay"><b>Pangalan ng Tatay:</b></label>
+            <input type="text" id="parentTatay" name="parentTatay" required>
+  
+            <label for="trabahoTatay">Trabaho ng Tatay</label>
+            <input type="text" id="trabahoTatay" name="trabahoTatay"><br>
+
+            <label for="parentNanay">Pangalan ng Nanay</label>
+            <input type="text" id="parentNanay" name="parentNanay" required>
+      
+            <label for="trabahoNanay">Trabaho ng Nanay</label>
+            <input type="text" id="trabahoNanay" name="trabahoNanay"><br>
+  
+            <label for="workingStatus">Working Status</label>
+            <select id="workingStatus" name="workingStatus" required>
+                <option value="" selected disabled>Select Working Status</option>
+                <option value="One(1) Parent is Working">One(1) Parent is Working</option>
+                <option value="Both(2) Parent is Working">Both(2) Parent is Working</option>
+                <option value="No(0) Parent is Working">No(0) Parent is Working</option>
+            </select>
+
+
+            <label for="incomeBracket">Income Bracket</label>
+            <select id="incomeBracket" name="incomeBracket" required>
+                <option value="" selected disabled>Select Income Bracket</option>
+                <option value="below_14000">Mababa sa P14,000</option>
+                <option value="14001_19040">P14,001 - P19,040</option>
+                <option value="19041_38080">P19,041 - P38,080</option>
+                <option value="38081_66640">P38,081 - P66,640</option>
+                <option value="66641_114240">P66,641 - P114,240</option>
+                <option value="114241_190400">P114,241 - P190,400</option>
+            </select><br>
+
+            <label for="familyMembers">Ilan ang Miyembro ng Pamilya (Nanay, Tatay, Mga Anak)</label>
+            <input type="number" id="familyMembers" name="familyMembers" required><br>
+
+            <label>Benefits/Memberships</label>
+            <div>
+                <input type="checkbox" name="benefits" value="SSS"> SSS
+                <input type="checkbox" name="benefits" value="4Ps"> 4P's
+                <input type="checkbox" name="benefits" value="PAG-IBIG"> PAG-IBIG
+                <input type="checkbox" name="benefits" value="GSIS"> GSIS<br>
+                <input type="checkbox" name="benefits" value="PWD"> PWD
+                <input type="checkbox" name="benefits" value="Senior Citizen"> Senior Citizen
+                <input type="checkbox" name="benefits" value="Solo Parent"> Solo Parent
+                <input type="checkbox" name="benefits" value="Other"> Other
+            </div>
+        </div>
+
+        <!-- School Information -->
+        <div>
+            <h5>Child Education</h5>
+            <div class="separator"></div>
+            <label for="schoolName">Name of School (if enrolled, N/A if NOT)</label>
+            <input type="text" id="schoolName" name="schoolName">
+      
+        <div>
+            <label for="gradeLevel">Grade/Level</label>
+            <select id="gradeLevel" name="gradeLevel" required>
+                <option value="" selected disabled>Select Grade Level</option>
+                <option value="Daycare or Kindegarten">Daycare or Kindegarten</option>
+                <option value="1-3">1-3</option>
+                <option value="4-6">4-6</option>
+                <option value="7-8">7-8</option>
+                <option value="9-10">9-10</option>
+                <option value="11-12">11-12</option>
+                <option value="College Level">College Level</option>
+                <option value="N/A">N/A</option>
+            </select>
+        </div>
+        <div>
+            <label for="schoolSchedule">Oras ng Pasok sa School</label>
+            <select id="schoolSchedule" name="schoolSchedule">
+                <option value="" selected disabled>Select</option>
+                <option value="Morning">Morning, mula 6:00 am - 12:00 am</option>
+                <option value="Afternoon">Afternoon, mula 12:30pm - 5:30pm</option>
+                <option value="Afternoon">N/A</option>
+            </select>
+        </div>
+        <div>
+            <label for="schoolDays">Araw ng Pasok sa School</label>
+            <div>
+                <input type="checkbox" name="schoolDays" value="Monday"> Monday
+                <input type="checkbox" name="schoolDays" value="Tuesday"> Tuesday
+                <input type="checkbox" name="schoolDays" value="Wednesday"> Wednesday
+                <input type="checkbox" name="schoolDays" value="Thursday"> Thursday
+                <input type="checkbox" name="schoolDays" value="Friday"> Friday
+                <input type="checkbox" name="schoolDays" value="Saturday"> Saturday
+                <input type="checkbox" name="schoolDays" value="Sunday"> Sunday
+                <input type="checkbox" name="schoolDays" value="N/A"> N/A
+            </div>
+        </div>
+
+        <!-- Therapy Information -->
+        <div>
+            <label for="therapySchedule">Preferred Schedule of Therapy</label>
+            <select id="therapySchedule" name="therapySchedule">
+                <option value="" selected disabled>Select</option>
+                <option value="Morning">Morning, mula 6:00 am - 12:00 am</option>
+                <option value="Afternoon">Afternoon, mula 12:30pm - 5:30pm</option>
+            </select>
+        </div>
+
+        <div>
+            <h5>Health Information</h5>
+            <div class="separator"></div>
+            <label for="diagnosis">Diagnosis</label>
+            <div>
+                <input type="checkbox" name="diagnosis" value="ADHD"> ADHD
+                <input type="checkbox" name="diagnosis" value="Autism Spectrum Disorder"> Autism Spectrum Disorder
+                <input type="checkbox" name="diagnosis" value="Cerebral Palsy"> Cerebral Palsy
+                <input type="checkbox" name="diagnosis" value="Down Syndrome"> Down Syndrome
+                <input type="checkbox" name="diagnosis" value="Epilepsy"> Epilepsy<br>
+                <input type="checkbox" name="diagnosis" value="Global Developmental Delay"> Global Developmental Delay
+                <input type="checkbox" name="diagnosis" value="Hearing Loss"> Hearing Loss
+                <input type="checkbox" name="diagnosis" value="Hydrocephalus"> Hydrocephalus
+                <input type="checkbox" name="diagnosis" value="Intellectual Disability"> Intellectual Disability<br>
+                <input type="checkbox" name="diagnosis" value="Language Disorder"> Language Disorder
+                <input type="checkbox" name="diagnosis" value="Learning Disability"> Learning Disability
+                <input type="checkbox" name="diagnosis" value="Speech Delay"> Speech Delay
+                <input type="checkbox" name="diagnosis" value="Other"> Other (Specify Below)
+
+            </div>
+        </div>
+        <div>
+            <label for="otherConditions">Other Conditions (Specify)</label>
+            <input type="text" id="otherConditions" name="otherConditions">
+        </div>
+
+        <!-- Assessment Details -->
+        <div>
+            <label for="assessmentDate">Date of Assessment</label>
+            <input type="date" id="assessmentDate" name="assessmentDate" required>
+       
+            <label for="ReassessmentDate">Date of Re-Assessment</label>
+            <input type="date" id="ReassessmentDate" name="ReassessmentDate" required>
+        </div>
+        
+        <!-- Testing Center -->
+        <div>
+            <label for="testingCenter">Testing Center</label>
+            <input type="text" id="testingCenter" name="testingCenter" required>
+        </div>
+
+        <!-- PWD ID Information -->
+        <div>
+            <label for="pwdIdNo">PWD ID No.</label>
+            <input type="text" id="pwdIdNo" name="pwdIdNo">
+        </div>
+        <div>
+            <label for="dateIssued">Date Issued</label>
+            <input type="date" id="dateIssued" name="dateIssued">
+      
+            <label for="validity">Validity (Expiration Date)</label>
+            <input type="date" id="validity" name="validity">
+        </div>
+
+        <!-- Upload Photo -->
+        <div>
+            <label for="photo">Upload Photo</label>
+            <input type="file" id="photo" name="photo">
+        </div>
+
+        <div>
+            <label for="consent">Allow CSN Consent for taking Photos and Videos</label>
+            <div>
+                <input type="checkbox" name="consent" value="Yes" id="consentYes" onclick="checkOnlyOne(this)"> 
+                <label for="consentYes">Yes</label>
+                <input type="checkbox" name="consent" value="No" id="consentNo" onclick="checkOnlyOne(this)"> 
+                <label for="consentNo">No</label>
+            </div>
+
+            <script>
+                function checkOnlyOne(checkbox) {
+                    const checkboxes = document.getElementsByName('consent');
+                    checkboxes.forEach((item) => {
+                        if (item !== checkbox) item.checked = false;
+                    });
+                }
+            </script>
+        </div>
+
+        <!-- Save Button -->
+        <div>
+            <button type="submit">Add Student</button>
+        </div>
+    </form>
+    </div>
+</div>
+    <script>
+         // Function to populate barangays based on selected district
+         function populateBarangays() {
+            const district = document.getElementById('district').value;
+            const barangaySelect = document.getElementById('barangay');
+            barangaySelect.innerHTML = '';
+
+            let barangays = [];
+
+            if (district === 'district_1') {
+                barangays = [
+                    'Baclaran',
+                    'Don Galo',
+                    'La Huerta',
+                    'San Dionisio',
+                    'San Isidro',
+                    'Sto Nino',
+                    'Tambo',
+                    'Vitalez',
+                ];
+            } else if (district === 'district_2') {
+                barangays = [
+                    'BF Homes',
+                    'Don Bosco',
+                    'Marcelo Green',
+                    'Merville',
+                    'Moonwalk',
+                    'San Antonio',
+                    'San Martin de Porres',
+                    'Sun Valley',
+                ];
+            }
+
+            barangaySelect.appendChild(new Option('Select Barangay', '', true, true));
+            barangays.forEach(brgy => {
+                barangaySelect.appendChild(new Option(brgy, brgy));
+            });
+        }
+
+        // Calculate Age based on Date of Birth
+        document.getElementById('dateOfBirth').addEventListener('change', function() {
+            const dob = new Date(this.value);
+            const today = new Date();
+            const age = today.getFullYear() - dob.getFullYear();
+            const m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            document.getElementById('age').value = age;
+        });
+
+    </script>
+</body>
+</html>

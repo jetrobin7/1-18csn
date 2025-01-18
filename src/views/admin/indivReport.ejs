@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Individual Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* Align items to start for upward positioning */
+      height: 100vh;
+      background-color: #f9f9f9;
+    }
+    .container {
+      text-align: center;
+      color: #008080; /* Teal color */
+      margin-top: 10%; /* Moves content slightly downward */
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    form {
+      margin-top: 20px;
+    }
+    label {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    input[type="text"] {
+      font-size: 1.2rem;
+      padding: 10px;
+      width: 300px;
+      border: 2px solid #008080; /* Teal border */
+      border-radius: 8px;
+      margin-right: 10px;
+      outline: none;
+    }
+    button[type="submit"] {
+      font-size: 1.2rem;
+      color: white;
+      background-color: #008080; /* Teal background */
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button[type="submit"]:hover {
+      background-color: #005757; /* Darker teal */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Student Individual Report</h1>
+    </header>
+    <form id="searchForm" action="/admin/indivReport/details" method="GET">
+      <label for="csnNumber">CSN Number:</label>
+      <input type="text" id="csnNumber" name="csnNumber" required>
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
+  <script>
+    // Adding a submit event listener to the form
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the default form submission
+      this.submit();  // Submit the form
+      // Refresh the page and reset the form field
+      setTimeout(() => {
+        document.getElementById('csnNumber').value = ''; // Clear the input field
+        location.reload();  // Refresh the page
+      }, 500);  // Delay to ensure form submission is processed
+    });
+  </script>
+</body>
+</html>

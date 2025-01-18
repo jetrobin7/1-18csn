@@ -1,0 +1,177 @@
+/* General Styles */
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", system-ui;
+    min-height: 100vh;
+}
+
+/* Dashboard Container */
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.main-content {
+    margin-left: 300px; /* Matches the sidebar width */ 
+    background-color: #f2f2f2;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.main-content:hover {
+    background-color: #ecf8f3;
+}
+
+/* Row Styles */
+.row {
+    margin-bottom: 5px;
+}
+
+/* Card Styles */
+.card {
+    background-color: #ffffff;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 0.75rem; /* Reduced border radius */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: auto; /* Limit card width */
+}
+.card:hover {
+    transform: translateY(-0.5rem);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Align icon and text to sides */
+}
+
+.icon-container {
+    font-size: 2rem; /* Slightly smaller icon size */
+    color: #0b698b;
+    margin-right: 10px;
+}
+
+.fs-2 {
+    font-size: 2rem; /* Adjusted font size for h3 */
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+    text-align: right;
+}
+
+p {
+    font-size: 1rem; /* Smaller font size for p */
+    color: #888;
+    margin: 0;
+    text-align: right; /* Align text to the right */
+}
+
+.ms-3 {
+    margin-left: 0; /* Remove extra left margin */
+}
+
+
+.buttons-section {
+    display: flex;
+    justify-content: space-around; /* Adjust the spacing between the buttons */
+    margin: 1rem 0; /* Adjust margin for spacing */
+}
+
+.buttons-section a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem; /* Increased padding for more width */
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #0396a6; /* Primary button color */
+    border-radius: 1rem;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.buttons-section a i {
+    margin-right: 0.5rem; /* Space between the icon and text */
+    font-size: 1.5rem;
+}
+
+.buttons-section a:hover {
+    background-color: #0b698b; /* Slightly darker shade on hover */
+    transform: translateY(-0.2rem);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+}
+
+
+/* Chart Container */
+.chart-container {
+    background-color: #ffffff;
+    text-align: center;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Calendar Container */
+.calendar-container {
+    background-color: #ffffff;
+    text-align: center;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal Styles */
+.modal-content {
+    border-radius: 10px;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.modal-title {
+    font-weight: bold;
+}
+
+/* Form Styles */
+.form-label {
+    font-weight: bold;
+}
+
+.form-control {
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+/* List Styles */
+.list-group-item {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+.list-group-item:hover {
+    background-color: #e9ecef;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    .buttons-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .button-schedule,
+    .button-student-list,
+    .button-student-progress {
+        margin-bottom: 10px;
+        width: 100%;
+        text-align: center;
+    }
+}

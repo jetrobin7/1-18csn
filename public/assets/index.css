@@ -1,0 +1,244 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", system-ui;
+    list-style: none;
+    text-decoration: none;
+}
+
+body {
+    background: rgb(240, 239, 239);
+}
+
+/* Header Styles */
+header {
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 33px 9%;
+    background: transparent;
+}
+
+/* Navigation Styles */
+.navlist {
+    display: flex;
+    margin-left: auto;
+}
+
+.navlist a {
+    color: rgb(0, 102, 68);
+    margin-left: 50px;
+    font-size: 15px;
+    font-weight: 450;
+    border-bottom: 2px solid transparent;
+    transition: all .55s ease;
+}
+
+.navlist a:hover {
+    border-bottom: 2px solid green;
+}
+
+/* Mobile Menu Icon */
+#menu-icon {
+    color: black;
+    font-size: 30px;
+    z-index: 10001;
+    cursor: pointer;
+    display: none;
+    position: absolute;
+    top: 0; 
+    right: 0;  
+    margin: 10px;
+}
+
+/* CSN Section Styles */
+.csn {
+    height: 100%;
+    width: 95%;
+    min-height: 100vh;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    gap: 2rem;
+}
+
+section {
+    padding: 0 10%;
+}
+
+.csn-text h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #037101;
+    margin-bottom: 2px;
+}
+
+.csn-text h1 {
+    font-family: "Roboto", sans-serif;
+    font-size: 30px;
+    color: #f1c232;
+    margin-bottom: 5px;
+}
+
+.csn-logo img {
+    width: 500px;
+    height: auto;
+}
+
+.csn-text p {
+    font-size: 16px;
+    line-height: 1.3;
+    margin-bottom: 40px;
+}
+
+.csn-text a {
+    display: inline-block;
+    color: white;
+    background: #069460;
+    border: 1px solid transparent;
+    padding: 12px 30px;
+    line-height: 1;
+    font-size: 14px;
+    font-weight: 500;
+    margin-left: 10px;
+    border-radius: 30px;
+    text-transform: uppercase;
+    transition: all .55s ease;
+}
+
+.csn-text a:hover {
+    background: transparent;
+    color: #069460;
+    border: 2px solid green;
+    transform: translateX(8px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #sidebar-wrapper {
+        width: 100%;
+        height: auto;
+    }
+
+    .list-group-item {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    .collapse .list-group-item {
+        padding-left: 30px;
+    }
+}
+
+/* Responsive Styles */
+@media (max-width: 1535px) {
+    header {
+        padding: 0 3%;
+        transition: .2s;
+    }
+}
+
+@media (max-width: 1460px) {
+    section {
+        padding: 0 12%;
+        transition: .2s;
+    }
+}
+
+@media (max-width: 1340px) {
+    .csn-logo img {
+        width: 100%;
+        height: auto;
+    }
+    
+    .csn-text h1 {
+        font-size: 25px;
+        margin: 0 0 30px;
+    }
+    
+    .csn-text h4 {
+        margin-bottom: 12px;
+    }
+}
+
+@media (max-width: 1195px) {
+    section {
+        padding: 0 3%;
+        transition: .2s;
+    }
+    
+    .csn-text {
+        padding-top: 25px;
+    }
+    
+    .csn-logo {
+        padding-top: 20px;
+        text-align: center;
+    }
+    
+    .csn-logo img {
+        width: 560px;
+        height: auto;
+    }
+    
+    .csn {
+        height: 100%;
+        gap: 1rem;
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 990px) {
+    #menu-icon {
+        display: block;
+    }
+    
+    .navlist {
+        position: absolute;
+        top: 100%;
+        right: -100%;
+        width: 300px;
+        height: 40vh;
+        background: #beebbd;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        padding: 50px 20px;
+        transition: all .55s ease;
+    }
+    
+    .navlist a {
+        display: block;
+        margin: 7px 0;
+        margin-left: 0;
+    }
+    
+    .navlist.open {
+        right: 0;
+    }
+}
+
+@media (max-width: 680px) {
+    .csn-logo img {
+        width: 200px;
+        height: auto;
+    }
+    
+    .csn-text {
+        padding-top: 25px;
+    }
+    
+    .csn-text a {
+        padding-top: 10px;
+        margin: 10px 0;
+        display: block;
+        text-align: center;
+    }
+}

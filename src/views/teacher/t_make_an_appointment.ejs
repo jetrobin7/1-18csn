@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Student Appointment</title>
+    <style>
+        /* General reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Montserrat", system-ui;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 300px; /* Matches the sidebar width */
+            padding: 20px;
+            background-color: #ffffff;
+            overflow-y: auto;
+            transition: margin-left 0.3s ease;
+            flex: 1;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            color: #003366;
+            margin-bottom: 20px; /* Add some space below the header */
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Center align content */
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            text-align: left; /* Align search bar to the left */
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center; /* Center-align table text */
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #003366;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            background-color: #228B22;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .action-btn:hover {
+            background-color: #90EE90;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                max-width: 90%;
+                padding: 15px;
+            }
+            
+            .main-content {
+                margin-left: 200px; /* Adjust for smaller screens */
+                padding-top: 20px; /* Add some top padding */
+                transition-duration: .3s; /* Smooth transition */
+                height: auto; /* Allow height to adjust */
+                overflow-y:hidden; /* Hide overflow */
+                display:flex; 
+                align-items:center; 
+                justify-content:center; 
+                flex-wrap:true; 
+              }
+            
+              #sidebar-wrapper {
+                  width :200 px; 
+                  height:auto; 
+              }
+          }
+          
+          @media (max-width :480px) { 
+              .main-content { 
+                  margin-left :150 px; 
+              } 
+              #sidebar-wrapper { 
+                  width :150 px; 
+              } 
+          }
+    </style>
+</head>
+<body>
+    <%- include('../partials/tsidebar') %>
+    <%- include('../partials/navbar') %>
+    
+    <div class="main-content">
+        <div class="container">
+            <h1>Student Appointment</h1>
+            
+            <div class="search-bar">
+                <input type="text" id="search" placeholder="Search for a student...">
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>CSN No.</th>
+                        <th>Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTable">
+                    <% students.forEach(student => { %>
+                        <tr>
+                            <td><%= student.csnNo %></td>
+                            <td><%= student.surname %> <%= student.givenName %> <%= student.middleName %></td>
+                            <td>
+                                <button class="action-btn" onclick="location.href='/teacher/t_make_an_appointment/add?csnNo=<%= student.csnNo %>&surname=<%= student.surname %>&givenName=<%= student.givenName %>&middleName=<%= student.middleName %>&gender=<%= student.gender %>&emailAddress=<%= student.emailAddress %>'">
+                                    Make an Appointment
+                                </button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Sample search filter functionality
+        document.getElementById('search').addEventListener('input', function() {
+            const searchValue = this.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#studentTable tr');
+
+            tableRows.forEach(row => {
+                const name = row.cells[1].textContent.toLowerCase();
+                if (name.includes(searchValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+           });
+       });
+   </script>
+
+</body>
+</html>

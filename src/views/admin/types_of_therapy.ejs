@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Types of Therapy</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> <!-- Bootstrap CSS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery for AJAX -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script> <!-- Bootstrap JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- For icons -->
+
+    <style>
+        /* Global styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fa; /* Light grey background */
+        }
+
+        .main-content {
+            margin-left: 0;
+            padding: 20px;
+            background-color: #ffffff;
+            overflow-y: auto;
+            transition: margin-left 0.3s ease;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Green/Teal Theme */
+        .btn-primary, .btn-success {
+            background-color: #008080 !important; /* Teal color */
+            border-color: #008080 !important;
+        }
+
+        .btn-primary:hover, .btn-success:hover {
+            background-color: #006666 !important; /* Darker teal on hover */
+            border-color: #004d4d !important;
+        }
+
+        .table {
+            border: 1px solid #008080; /* Teal border for the entire table */
+            border-radius: 8px;
+        }
+
+        .table thead {
+            background-color: #f0fdf9; /* Light teal for table headers */
+            color: #008080;
+        }
+
+        /* Making the table columns larger */
+        .table td, .table th {
+            font-size: 1.2rem; /* Increase font size */
+            padding: 1.2rem; /* Add more padding to increase cell size */
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #008080 !important; /* Teal border for table cells */
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 128, 128, 0.05); /* Light teal hover effect */
+        }
+
+        .table-bordered {
+            border: 2px solid #008080 !important;
+        }
+
+        .table-striped tbody tr:hover {
+            background-color: rgba(0, 128, 128, 0.1); /* Light teal hover effect */
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5); /* Dark background for modal */
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Form and Inputs */
+        .form-control {
+            border: 2px solid #008080 !important; /* Teal border for form inputs */
+        }
+
+        .form-control:focus {
+            border-color: #006666 !important; /* Darker teal on focus */
+            box-shadow: 0 0 0 0.2rem rgba(0, 128, 128, 0.25);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        h1, h2 {
+            color: #008080;
+        }
+    </style>
+</head>
+<body>
+    <%- include('../partials/sidebar') %>
+    <%- include('../partials/navbar') %>
+
+    <div class="main-content">
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Types of Therapy</h1>
+
+        <!-- Add Therapy Button -->
+        <button id="addTherapyBtn" class="btn btn-success mb-3"><i class="fas fa-plus"></i> Add Therapy</button>
+
+        <!-- Table for Therapy Types -->
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>CSN Course Code</th>
+                    <th>Therapy</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody id="therapyTableBody">
+                <% therapies.forEach(function(therapy) { %>
+                <tr>
+                    <td><%= therapy.csnCourseCode %></td>
+                    <td><%= therapy.name %></td>
+                    <td><%= therapy.description %></td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal for Adding Therapy -->
+    <div id="addTherapyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Add Therapy</h2>
+            <form id="addTherapyForm">
+                <div class="form-group">
+                    <label for="therapyName">Therapy Name:</label>
+                    <input type="text" id="therapyName" name="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="therapyDescription">Description:</label>
+                    <textarea id="therapyDescription" name="description" class="form-control" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Add Therapy</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Show modal
+        document.getElementById('addTherapyBtn').onclick = function () {
+            document.getElementById('addTherapyModal').style.display = 'block';
+        };
+
+        // Close modal
+        document.getElementById('closeModal').onclick = function () {
+            document.getElementById('addTherapyModal').style.display = 'none';
+        };
+
+        // Handle form submission
+        document.getElementById('addTherapyForm').onsubmit = function (e) {
+            e.preventDefault();
+            const formData = $(this).serialize();
+
+            $.ajax({
+                url: '/api/therapies',
+                method: 'POST',
+                data: formData,
+                success: function (data) {
+                    // Create a new row with the added therapy details
+                    const newRow = `<tr>
+                        <td>${data.csnCourseCode}</td>
+                        <td>${data.name}</td>
+                        <td>${data.description}</td>
+                    </tr>`;
+                    
+                    // Append the new row to the table
+                    $('#therapyTableBody').append(newRow);
+
+                    // Clear form and close modal
+                    document.getElementById('addTherapyForm').reset();
+                    document.getElementById('addTherapyModal').style.display = 'none';
+                },
+                error: function () {
+                    alert('Failed to add therapy.');
+                }
+            });
+        };
+    </script>
+</body>
+</html>

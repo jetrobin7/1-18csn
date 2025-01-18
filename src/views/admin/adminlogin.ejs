@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CSN Admin Login</title>
+    <link rel="stylesheet" type="text/css" href="/assets/login.css">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal button {
+            background-color: teal;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal button:hover {
+            background-color: #005f5f;
+        }
+
+        .timer {
+            font-size: 16px;
+            margin-top: 10px;
+            color: red;
+        }
+
+        .form-control {
+            position: relative;
+        }
+
+        #togglePassword {
+            border: none;
+            background: transparent;
+            position: absolute;
+            right: 14%;
+            top: 45%;
+            transform: translateY(-40%);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <section class="side">
+        <img id="loginBanner" src="/images/Csn2.gif" alt="Login Banner">
+    </section>
+
+    <section class="main">
+        <div class="login-container">
+            <img src="/images/csn logo.png" alt="CSN Logo">
+            <h4>Parañaque City Center for</h4>
+            <h1>Children with Special Needs</h1>
+            <div class="separator"></div>
+            <p class="welcome-message">Log in your credentials to proceed and access the Admin Panel</p>
+
+            <div class="form-box">
+                <div class="card-body p-4">
+                    <form class="login-form" method="POST" action="/adminlogin">
+                        <div class="form-control">
+                            <input type="text" placeholder="Email" name="uname" id="uname" class="form-control" required>
+                            <i class="ri-user-fill"></i>
+                        </div>
+                        <div class="form-control">
+                            <input type="password" placeholder="Password" name="password" id="password" class="form-control" required>
+                            <i class="bx bx-lock"></i>
+                            <!-- Show/Hide Password Icon -->
+                            <button type="button" id="togglePassword">
+                                <i id="toggleIcon" class="bx bx-show"></i>
+                            </button>
+                        </div>
+                        <div class="forgot-password-container">
+                            <a href="/admin/forgot_password" class="text-muted forgot-password">Forgot Password?</a>
+                        </div>
+                        <button class="submit" id="submitButton">Login</button>
+                    </form>
+                </div>
+            </div>
+            <div class="link-container">
+                <a href="/" class="text-muted back-to-home">Back to Home</a>
+            </div>
+            <p class="lead mt-4" style="font-size: 12px;">Don't have an Account? <a href="./adminsignup" class="text-muted sign-up">Sign Up</a></p>
+        </div>
+    </section>
+
+    <!-- OTP Modal -->
+    <div id="otpModal" class="modal">
+        <div class="modal-content">
+            <h3>Verify OTP</h3>
+            <p>An OTP has been sent to your email. Please enter it below:</p>
+            <form id="otpForm">
+                <input type="text" id="otp" name="otp" placeholder="Enter OTP" required>
+                <button type="submit">Verify</button>
+            </form>
+            <p id="timer" class="timer">Expires in 3:00</p>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.querySelector('.login-form');
+        const otpModal = document.getElementById('otpModal');
+        const otpForm = document.getElementById('otpForm');
+        const passwordField = document.getElementById('password');
+        const loginBanner = document.getElementById('loginBanner');
+        const timerElement = document.getElementById('timer');
+        const passwordToggle = document.getElementById('togglePassword');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        let otpTimer;
+        let timerMinutes = 3; // OTP expiration time: 3 minutes
+        let timerSeconds = 0;
+
+        // Change banner on password field focus and blur
+        passwordField.addEventListener('focus', () => {
+            loginBanner.src = '/images/closeeyes.gif'; // Change this to your desired image
+        });
+
+        passwordField.addEventListener('blur', () => {
+            loginBanner.src = '/images/Csn2.gif'; // Revert back to the original image
+        });
+
+        // Handle login form submission
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const uname = document.getElementById('uname').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/adminlogin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ uname, password })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                otpModal.style.display = 'block';
+                startOtpTimer();
+            } else {
+                alert(result.message || 'Login failed!');
+                otpModal.style.display = 'none';
+            }
+        });
+
+        // Start OTP countdown timer
+        function startOtpTimer() {
+            otpTimer = setInterval(() => {
+                if (timerSeconds === 0) {
+                    if (timerMinutes === 0) {
+                        clearInterval(otpTimer);
+                        alert('OTP expired!');
+                        otpModal.style.display = 'none';
+                    } else {
+                        timerMinutes--;
+                        timerSeconds = 59;
+                    }
+                } else {
+                    timerSeconds--;
+                }
+
+                const minutesString = timerMinutes < 10 ? '0' + timerMinutes : timerMinutes;
+                const secondsString = timerSeconds < 10 ? '0' + timerSeconds : timerSeconds;
+                timerElement.textContent = `Expires in ${minutesString}:${secondsString}`;
+            }, 1000);
+        }
+
+        // Handle OTP form submission
+        otpForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const otp = document.getElementById('otp').value;
+
+            const response = await fetch('/verifyotp', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('otpToken')}` // Send token
+                },
+                body: JSON.stringify({ otp })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // alert('Login successful!');
+                window.location.href = '/admin/dashboard';
+            } else {
+                alert(result.message || 'OTP verification failed!');
+            }
+        });
+
+        // Show/Hide Password Functionality
+        passwordToggle.addEventListener('click', () => {
+            const isPasswordVisible = passwordField.type === 'text';
+            passwordField.type = isPasswordVisible ? 'password' : 'text';
+            toggleIcon.classList.toggle('bx-show', isPasswordVisible);
+            toggleIcon.classList.toggle('bx-hide', !isPasswordVisible);
+        });
+    </script>
+</body>
+</html>

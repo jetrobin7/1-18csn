@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appointments</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #f7fafa;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 0;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+      overflow: hidden;
+      position: relative;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 16px 20px;
+      border: none;
+      border-bottom: 1px solid #edf2f2;
+    }
+
+    th {
+      background-color: #00897b;
+      color: white;
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+    }
+
+    td {
+      color: #2c3e50;
+      font-size: 0.95rem;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: #f0f9f8;
+      transition: background-color 0.2s ease;
+    }
+
+    .table-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* Search bar styles */
+    .search-container {
+      position: absolute;
+      top: -50px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-container input {
+      border: none;
+      outline: none;
+      padding: 8px 10px;
+      font-size: 1rem;
+      border-radius: 5px 0 0 5px;
+    }
+
+    .search-container button {
+      background-color: #00897b;
+      color: white;
+      border: none;
+      border-radius: 0 5px 5px 0;
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-container button:hover {
+      background-color: #00695c;
+    }
+
+    .page-title {
+      color: #00897b;
+      text-align: center;
+      font-size: 1.75rem;
+      margin-bottom: 2rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="page-title">Appointments for <%= teacher.firstName %> <%= teacher.lastName %></h1>
+
+  <div class="table-container">
+    <!-- Search Container -->
+    <div class="search-container">
+      <input id="search-box" type="text" placeholder="Search appointments...">
+      <button>
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+
+    <!-- Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>CSN No.</th>
+          <th>Name</th>
+          <th>Therapy Type</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Attendance</th>
+        </tr>
+      </thead>
+      <tbody id="appointment-tbody">
+        <% appointments.forEach(appointment => { %>
+          <tr>
+            <td><%= appointment.csnNo %></td>
+            <td><%= appointment.surname %>, <%= appointment.givenName %></td>
+            <td><%= appointment.therapyType %></td>
+            <td><%= appointment.appointmentDate.toDateString() %></td>
+            <td><%= appointment.appointmentTimeStart %> - <%= appointment.appointmentTimeEnd %></td>
+            <td><%= appointment.attendance %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const searchBox = document.getElementById('search-box');
+    const tableBody = document.getElementById('appointment-tbody');
+    const rows = tableBody.getElementsByTagName('tr');
+
+    function searchTable() {
+      const query = searchBox.value.toLowerCase();
+
+      Array.from(rows).forEach(row => {
+        const cells = row.getElementsByTagName('td');
+        const matches = Array.from(cells).some(cell =>
+          cell.textContent.toLowerCase().includes(query)
+        );
+
+        row.style.display = matches ? '' : 'none';
+      });
+    }
+
+    // Add event listener for real-time search
+    searchBox.addEventListener('input', searchTable);
+  </script>
+</body>
+</html>

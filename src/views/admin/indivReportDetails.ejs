@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Information</title>
+  <style>
+    :root {
+      --teal-primary: #20B2AA;
+      --teal-background: #E0F4F4;
+      --text-dark: #2C3E50;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: var(--teal-background);
+      color: var(--text-dark);
+      line-height: 1.4;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .header img {
+      width: 60px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--teal-primary);
+    }
+
+    .header p {
+      margin: 2px 0;
+      font-size: 13px;
+      color: var(--text-dark);
+    }
+
+    .section-title {
+      background: var(--teal-primary);
+      color: white;
+      padding: 8px 12px;
+      margin: 10px 0 5px;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 6px 8px;
+    }
+
+    .student-photo {
+      width: 1.2in;
+      height: 1.2in;
+      object-fit: cover;
+      border: 2px solid var(--teal-primary);
+      padding: 2px;
+    }
+
+    .button-group {
+      text-align: center;
+      margin: 15px 0;
+    }
+
+    .button-group button {
+      display: inline-block;
+      margin: 0 5px;
+      background: var(--teal-primary);
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    @media print {
+      @page {
+        size: A4;
+        margin: 1cm;
+      }
+
+      body {
+        padding: 0;
+        background-color: white;
+      }
+
+      .container {
+        padding: 0;
+      }
+
+      .header h1 {
+        font-size: 20px;
+        color: var(--text-dark) !important;
+      }
+
+      .section-title {
+        background: var(--teal-primary) !important;
+        color: white !important;
+      }
+
+      .student-photo {
+        border: 2px solid var(--teal-primary) !important;
+      }
+
+      .button-group {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        padding: 10px;
+      }
+    }
+  </style>
+  <script>
+    function printReport() {
+      window.print();
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="/path/to/logo.png" alt="Company Logo">
+      <h1>Parañaque Center for Children with Special Needs</h1>
+      <p>Contact: +63 912 345 6789 | Email: info@csnparanaque.org</p>
+      <p>Address: Parañaque City, Metro Manila, Philippines</p>
+    </div>
+
+    <% if (student) { %>
+      <div class="section-title">CHILD INFORMATION</div>
+      <table>
+        <tr>
+          <td><strong>CSN Number:</strong></td>
+          <td><%= student.csnNo %></td>
+          <td rowspan="4" style="text-align: center;">
+            <img src="<%= student.photo || '/placeholder.png' %>" alt="Student Photo" class="student-photo">
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Last Name:</strong></td>
+          <td><%= student.surname %></td>
+        </tr>
+        <tr>
+          <td><strong>First Name:</strong></td>
+          <td><%= student.givenName %></td>
+        </tr>
+        <tr>
+          <td><strong>Middle Name:</strong></td>
+          <td><%= student.middleName || 'N/A' %></td>
+        </tr>
+        <tr>
+          <td><strong>Gender:</strong></td>
+          <td><%= student.gender %></td>
+        </tr>
+        <tr>
+          <td><strong>Date of Birth:</strong></td>
+          <td><%= student.dateOfBirth.toDateString() %></td>
+        </tr>
+        <tr>
+          <td><strong>Address:</strong></td>
+          <td colspan="2"><%= student.completeAddress %></td>
+        </tr>
+        <tr>
+          <td><strong>Barangay:</strong></td>
+          <td><%= student.barangay %></td>
+          <td><strong>Contact No:</strong> <%= student.contactNumber || 'N/A' %></td>
+        </tr>
+        <tr>
+          <td><strong>Diagnosis:</strong></td>
+          <td colspan="2"><%= student.diagnosis.join(', ') || 'N/A' %></td>
+        </tr>
+      </table>
+
+      <div class="section-title">FAMILY INFORMATION</div>
+      <table>
+        <tr>
+          <td><strong>Father's Name:</strong></td>
+          <td><%= student.parentTatay %></td>
+          <td><strong>Occupation:</strong> <%= student.trabahoTatay || 'N/A' %></td>
+        </tr>
+        <tr>
+          <td><strong>Mother's Name:</strong></td>
+          <td><%= student.parentNanay %></td>
+          <td><strong>Occupation:</strong> <%= student.trabahoNanay || 'N/A' %></td>
+        </tr>
+        <tr>
+          <td><strong>Income Bracket:</strong></td>
+          <td colspan="2"><%= student.incomeBracket || 'N/A' %></td>
+        </tr>
+        <tr>
+          <td><strong>Family Members:</strong></td>
+          <td colspan="2"><%= student.familyMembers %></td>
+        </tr>
+      </table>
+
+      <div class="section-title">EDUCATION OF CHILD</div>
+      <table>
+        <tr>
+          <td><strong>School Name:</strong></td>
+          <td colspan="2"><%= student.schoolName || 'N/A' %></td>
+        </tr>
+        <tr>
+          <td><strong>Grade Level:</strong></td>
+          <td colspan="2"><%= student.gradeLevel || 'N/A' %></td>
+        </tr>
+        <tr>
+          <td><strong>School Schedule:</strong></td>
+          <td colspan="2"><%= student.schoolSchedule || 'N/A' %></td>
+        </tr>
+      </table>
+
+      <div class="button-group">
+        <button onclick="printReport()">Print Report</button>
+        <button onclick="window.history.back()">Back</button>
+      </div>
+    <% } else { %>
+      <p>No student information available.</p>
+      <div class="button-group">
+        <button onclick="window.history.back()">Back</button>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>
